@@ -1,20 +1,24 @@
-# Use an official Node.js runtime as a parent image
+# Gunakan image resmi Node.js sebagai parent image
 FROM node:14
 
-# Set the working directory
+# Atur direktori kerja
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
+# Salin package.json dan package-lock.json
 COPY package*.json ./
 
-# Install dependencies
+# Argumen untuk username dan password Docker
+ARG DOCKER_USERNAME
+ARG DOCKER_PASSWORD
+
+# Instalasi dependensi
 RUN npm install
 
-# Copy the rest of the application code
+# Salin seluruh kode aplikasi
 COPY . .
 
-# Expose the port the app runs on
+# Buka port yang digunakan aplikasi
 EXPOSE 3000
 
-# Define the command to run the app
+# Tentukan perintah untuk menjalankan aplikasi
 CMD [ "node", "gateway.js" ]
