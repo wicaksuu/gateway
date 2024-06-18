@@ -1,0 +1,23 @@
+{
+  "name": "gaateway-wicaksu",
+  "version": "1.0.1",
+  "description": "gaateway from all api wicaksu",
+  "main": "gateway.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon gateway.js"
+  },
+  "keywords": [
+    "wicaksu"
+  ],
+  "author": "wicaksu",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-jwt": "^8.4.1",
+    "mongodb": "^6.7.0",
+    "mongoose": "^8.4.1",
+    "nodemon": "^3.1.3"
+  }
+}
