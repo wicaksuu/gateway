@@ -1,5 +1,5 @@
 # Gunakan image resmi Node.js sebagai parent image
-FROM node:14
+FROM node:22
 
 # Atur direktori kerja
 WORKDIR /usr/src/app
