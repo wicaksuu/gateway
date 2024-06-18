@@ -42,7 +42,6 @@ jobs:
           host: 103.132.230.116
           username: wicaksu
           password: Jack03061997
-          key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCfJMD2PSYThYXxc4y9XIO+4xKcywo8/8OYbvKXfxt8iwjJbaEr+ByLlQt0s5Z5oL5cLaL/KAuI9SNAhDFwX4Tf5VsElF81DBvUZSeetOCPDozPv28i/moVc/6bah8BqFoy8epr92SOueXoV4H4/YxKPCRBDv5K/2I/zaSYxowxfP2o+zYIx4rmtYCnTa7vNAwIQRg3pSLqOcTAfcVtYzwefi4rym0x0DcJKqvYs8xIf16Z31XcqkwBuzSRkyf5SIWvGBF2SNwq4mWRQlcJ1qpDvIL7M8WTkDZOdHQgKmUobahjeRIX1mZuaWrkVtoY7OaFJlx/00pUPBxh7+c3Fh1Ztnac82bPYWPTuT8cOU55BHcezOEmivjra1iyIgUVDNoUTMIlWhO/xHvisF13LDXvS/sErrS7lJNJvo8YCoO48ziQa20EE02w5n4xfl6FDpYTByIcfUNtYTcTOZc0bSY0sF5kfrPPrE2ipTDm2XGgjVm0TyIcp8uwM4Kl/EauaNCZ94P3suKO545RMz9W3Xlv/BEIzuaeqH6ZaI8ovyi8L3C3O47rpZTU5Lhuq5Bem6ntekFzU9GF7j5njYOHDE65b4YWJj372W1/4kVCH9GRDOu9FEqNB31YjdaZRT7Y9zzVjZDTo/pNuAHrfIEV6V2nGOsDaq1idlQDSsMktmRMEQ== wicak@wicak.id"
           script: |
             docker pull wicaksu/gateway:latest
             docker stop gateway || true
