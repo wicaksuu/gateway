@@ -7,9 +7,6 @@ WORKDIR /usr/src/app
 # Salin package.json dan package-lock.json
 COPY package*.json ./
 
-# Argumen untuk username dan password Docker
-ARG DOCKER_USERNAME
-ARG DOCKER_PASSWORD
 
 # Instalasi dependensi
 RUN npm install
