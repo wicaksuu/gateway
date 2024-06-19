@@ -53,9 +53,9 @@ module.exports = {
         },
       };
 
-      res.json(response);
+      res.status(200).json({ data: response });
     } catch (error) {
-      res.status(500).json({ error: "Error retrieving system information" });
+      res.status(500).json({ messages: "Error retrieving system information" });
     }
   },
 };

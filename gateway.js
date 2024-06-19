@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -7,6 +8,7 @@ const responseApiFormat = require("./engine/middleware/responseApiFormat");
 const headerControl = require("./engine/middleware/HeaderControl");
 const apiRoutes = require("./engine/routers/router");
 
+app.use(bodyParser.json());
 app.use(responseApiFormat);
 app.use(headerControl);
 

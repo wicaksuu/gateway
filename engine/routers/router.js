@@ -35,16 +35,15 @@ loadFunctionModules(allFunctions, functionsDir);
 
 router.post("/", async (req, res, next) => {
   const { query, params, service } = req.body;
-
   if (service) {
     if (query && functionModules[query]) {
       executeFunction(query, params, req, res, next);
     } else {
-      return res.status(404).json({ error: "Function not found" });
+      return res.status(404).json({ messages: "Function not found" });
     }
   } else {
     if (!functionModules[query]) {
-      return res.status(404).json({ error: "Function not found" });
+      return res.status(404).json({ messages: "Function not found" });
     }
     executeFunction(query, params, req, res, next);
   }
@@ -53,7 +52,7 @@ router.post("/", async (req, res, next) => {
 const executeFunction = async (query, params, req, res, next) => {
   const func = functionModules[query];
   if (Object.keys(params).length !== func.params.length) {
-    return res.status(203).json({ error: "Invalid parameters" });
+    return res.status(203).json({ messages: "Invalid parameters" });
   }
 
   req.body.params = params;
@@ -67,7 +66,7 @@ const executeFunction = async (query, params, req, res, next) => {
     if (index < middlewares.length) {
       const middleware = middlewares[index];
       await middleware(req, res, (err) => {
-        if (err) return res.status(500).json({ error: "Server error" });
+        if (err) return res.status(500).json({ messages: "Server error" });
         runMiddlewares(req, res, middlewares, index + 1);
       });
     }
