@@ -1,25 +1,21 @@
-# Tahap build
-FROM node:22 as build
+# Gunakan image resmi Node.js sebagai parent image
+FROM node:22
 
+# Atur direktori kerja
 WORKDIR /usr/src/app
 
+# Salin package.json dan package-lock.json
 COPY package*.json ./
 
-RUN npm ci
 
+# Instalasi dependensi
+RUN npm install
+
+# Salin seluruh kode aplikasi
 COPY . .
 
-RUN npm run build
-
-# Tahap produksi
-FROM node:22 as production
-
-WORKDIR /usr/src/app
-
-COPY package*.json ./
-COPY --from=build /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/dist ./dist
-
+# Buka port yang digunakan aplikasi
 EXPOSE 3000
 
-CMD ["node", "gateway.js"]
+# Tentukan perintah untuk menjalankan aplikasi
+CMD [ "node", "gateway.js" ]
