@@ -35,15 +35,39 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
+
     steps:
-      - name: SSH to Server
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: SSH to Server and Deploy
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: 103.132.230.116
           username: wicaksu
           password: Jack03061997
           script: |
+            docker login -u wicaksu -p Jack03061997
+
+            # Pull and run MongoDB container if not running
+            if [ ! "$(docker ps -q -f name=mongodb)" ]; then
+              if [ "$(docker ps -aq -f status=exited -f name=mongodb)" ]; then
+                docker rm mongodb
+              fi
+              docker run -d --name mongodb -e MONGO_INITDB_ROOT_USERNAME=wicaksu -e MONGO_INITDB_ROOT_PASSWORD=Jack03061997 -v mongo_data:/data/db mongo:latest
+            fi
+
+            # Register user in MongoDB
+            docker exec -i mongodb mongo admin --eval '
+              db.createUser({
+                user: "wicaksu",
+                pwd: "Jack03061997",
+                roles: [ { role: "root", db: "admin" } ]
+              })
+            ' || true
+
+            # Pull and run the gateway container
             docker pull wicaksu/gateway:latest
             docker stop gateway || true
             docker rm gateway || true
-            docker run -d --name gateway -p 3000:3000 wicaksu/gateway:latest
+            docker run -d --name gateway -p 3000:3000 --link mongodb:mongodb wicaksu/gateway:latest
