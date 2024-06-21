@@ -43,6 +43,17 @@ jobs:
           username: wicaksu
           password: Jack03061997
           script: |
+            if [ $(docker ps -q -f name=mongodb) ]; then
+              echo "MongoDB is already running"
+            else
+              echo "Starting a new MongoDB container"
+              docker run -d --name mongodb -v mongodb_data:/data/db -e MONGO_INITDB_ROOT_USERNAME=wicaksu -e MONGO_INITDB_ROOT_PASSWORD=Jack03061997 mongo:latest
+            fi
+
+            # Create new user if not exists
+            docker exec -i mongodb mongo admin --eval "db.createUser({user: 'newuser', pwd: 'newpassword', roles:[{role:'readWrite', db:'wicaksu'}]})"
+
+            # Pull and run the latest gateway container
             docker pull wicaksu/gateway:latest
             docker stop gateway || true
             docker rm gateway || true
