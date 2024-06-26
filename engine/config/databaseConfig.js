@@ -1,21 +1,18 @@
 require("dotenv").config();
+const mongoose = require("mongoose");
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
-
-let client;
-
-try {
-  client = new MongoClient(process.env.MONGO_URI, {
-    serverApi: {
-      version: ServerApiVersion.v1,
-      strict: true,
-      deprecationErrors: true,
-    },
-  });
-  console.log("Koneksi ke database berhasil");
-} catch (error) {
-  console.error("Gagal menghubungkan ke database:", error);
-  process.exit(1);
+async function connect() {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("Koneksi ke database berhasil");
+    return mongoose.connection;
+  } catch (error) {
+    console.error("Gagal menghubungkan ke database:", error);
+    process.exit(1);
+  }
 }
 
-module.exports = client;
+module.exports = { connect };

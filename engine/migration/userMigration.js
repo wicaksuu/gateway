@@ -1,13 +1,25 @@
 const mongoose = require("mongoose");
 const User = require("../models/userModel");
 
-const migrateUsers = async () => {
+const db = require("../config/databaseConfig");
+
+async function migrateUsers() {
   try {
-    // Connect to the database
-    await mongoose.connect("mongodb://localhost:27017/yourDatabase", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const connection = await db.connect();
+    const adminDb = connection.db.admin();
+
+    // Cek apakah database sudah ada
+    const dbList = await adminDb.listDatabases();
+    const dbExists = dbList.databases.some(
+      (database) => database.name === process.env.DB_NAME
+    );
+
+    if (!dbExists) {
+      console.log("Database tidak ditemukan. Membuat database baru...");
+      await connection.createCollection("users");
+    } else {
+      console.log("Database sudah ada. Melanjutkan migrasi...");
+    }
 
     // Define the users to be migrated
     const users = [
@@ -40,6 +52,6 @@ const migrateUsers = async () => {
     // Close the database connection
     await mongoose.connection.close();
   }
-};
+}
 
 migrateUsers();
