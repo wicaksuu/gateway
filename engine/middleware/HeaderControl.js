@@ -15,9 +15,6 @@ const headerControl = (req, res, next) => {
       },
     });
   }
-  console.log("Request Method:", requestMethod);
-  console.log("Request Body:", requestBody);
-  console.log("Request Path:", requestPath);
 
   next();
 };

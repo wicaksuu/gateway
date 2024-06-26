@@ -1,5 +1,5 @@
-const User = require("../../engine/models/userModel");
-const bcrypt = require("bcrypt");
+const UserModel = require("../../engine/models/userModel");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 
@@ -22,34 +22,42 @@ module.exports = {
   },
   middlewares: [],
   execute: async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password } = req.body.params;
+    if (!username || typeof username !== "string") {
+      return res.status(400).json({ message: "Username tidak valid" });
+    }
+    if (!password || typeof password !== "string") {
+      return res.status(400).json({ message: "Password tidak valid" });
+    }
 
     try {
-      const user = await User.findOne({ username });
+      const user = await UserModel.findOne({ username });
       if (!user) {
-        return res
-          .status(401)
-          .json({ message: "Invalid username or password" });
+        return res.status(401).json({ message: "Username tidak terdaftar" });
       }
 
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      if (!isPasswordValid) {
-        return res
-          .status(401)
-          .json({ message: "Invalid username or password" });
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: "Password salah" });
       }
 
       const token = jwt.sign(
-        { id: user._id, role: user.role },
+        {
+          id: user._id,
+          username: user.username,
+          permission: user.permission,
+          whatsapp: user.whatsapp,
+        },
         process.env.JWT_SECRET,
         {
           expiresIn: "1h",
         }
       );
 
-      res.status(200).json({ message: "Login successful", token });
+      res.status(200).json({ data: token });
     } catch (error) {
-      res.status(500).json({ message: "Error during login" });
+      console.error("Error saat login:", error);
+      res.status(500).json({ message: "Terjadi kesalahan pada server" });
     }
   },
 };

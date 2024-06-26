@@ -3,10 +3,12 @@ const bodyParser = require("body-parser");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const db = require("./engine/config/databaseConfig");
+const connectDB = require("./engine/config/databaseConfig");
 const responseApiFormat = require("./engine/middleware/responseApiFormat");
 const headerControl = require("./engine/middleware/HeaderControl");
 const apiRoutes = require("./engine/routers/router");
+
+connectDB();
 
 app.use(bodyParser.json());
 app.use(responseApiFormat);

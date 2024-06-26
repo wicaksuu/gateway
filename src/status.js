@@ -1,4 +1,5 @@
 const si = require("systeminformation");
+const authMiddleware = require("../engine/middleware/authMiddleware");
 
 module.exports = {
   name: "status",
@@ -9,7 +10,7 @@ module.exports = {
     query: "status",
     params: {},
   },
-  middlewares: [],
+  middlewares: [authMiddleware],
   execute: async (req, res) => {
     try {
       const cpu = await si.cpu();
@@ -55,7 +56,7 @@ module.exports = {
 
       res.status(200).json({ data: response });
     } catch (error) {
-      res.status(500).json({ messages: "Error retrieving system information" });
+      res.status(500).json({ message: "Error retrieving system information" });
     }
   },
 };
