@@ -39,7 +39,7 @@ jobs:
       - name: SSH to Server
         uses: appleboy/ssh-action@v0.1.2
         with:
-          host: 103.132.230.116
+          host: 103.132.230.115
           username: wicaksu
           password: Jack03061997
           script: |

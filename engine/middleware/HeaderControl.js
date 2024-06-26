@@ -15,14 +15,6 @@ const headerControl = (req, res, next) => {
       },
     });
   }
-  //   if (requestMethod == "POST") {
-  //     res.status(400).json({
-  //       messages: {
-  //         error: requestMethod,
-  //         errorMessage: "Bad Request",
-  //       },
-  //     });
-  //   }
   console.log("Request Method:", requestMethod);
   console.log("Request Body:", requestBody);
   console.log("Request Path:", requestPath);
