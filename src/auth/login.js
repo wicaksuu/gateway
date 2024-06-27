@@ -24,10 +24,14 @@ module.exports = {
   execute: async (req, res) => {
     const { username, password } = req.body.params;
     if (!username || typeof username !== "string") {
-      return res.status(400).json({ message: "Username tidak valid" });
+      return res
+        .status(400)
+        .json({ message: { username: "Username tidak valid" } });
     }
     if (!password || typeof password !== "string") {
-      return res.status(400).json({ message: "Password tidak valid" });
+      return res
+        .status(400)
+        .json({ message: { password: "Password tidak valid" } });
     }
 
     try {
@@ -35,12 +39,16 @@ module.exports = {
         $or: [{ username }, { whatsapp: username }],
       });
       if (!user) {
-        return res.status(401).json({ message: "Username tidak terdaftar" });
+        return res
+          .status(401)
+          .json({ message: { username: "Username tidak terdaftar" } });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(401).json({ message: "Password salah" });
+        return res
+          .status(401)
+          .json({ message: { password: "Password salah" } });
       }
 
       const token = jwt.sign(
@@ -49,6 +57,7 @@ module.exports = {
           username: user.username,
           permission: user.permission,
           whatsapp: user.whatsapp,
+          role: user.role,
         },
         process.env.JWT_SECRET,
         {
@@ -56,10 +65,23 @@ module.exports = {
         }
       );
 
-      res.status(200).json({ data: token });
+      res.status(200).json({
+        data: {
+          token: token,
+          user: {
+            id: user._id,
+            username: user.username,
+            permission: user.permission,
+            whatsapp: user.whatsapp,
+            role: user.role,
+          },
+        },
+      });
     } catch (error) {
       console.error("Error saat login:", error);
-      res.status(500).json({ message: "Terjadi kesalahan pada server" });
+      res
+        .status(500)
+        .json({ message: { server: "Terjadi kesalahan pada server" } });
     }
   },
 };
