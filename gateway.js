@@ -11,6 +11,15 @@ const apiRoutes = require("./engine/routers/router");
 connectDB();
 
 app.use(bodyParser.json());
+
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
+    return res
+      .status(400)
+      .send({ status: 400, message: "Bad request, invalid JSON" });
+  }
+  next();
+});
 app.use(responseApiFormat);
 app.use(headerControl);
 
