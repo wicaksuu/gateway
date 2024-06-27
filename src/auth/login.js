@@ -31,7 +31,9 @@ module.exports = {
     }
 
     try {
-      const user = await UserModel.findOne({ username });
+      const user = await UserModel.findOne({
+        $or: [{ username }, { whatsapp: username }],
+      });
       if (!user) {
         return res.status(401).json({ message: "Username tidak terdaftar" });
       }
