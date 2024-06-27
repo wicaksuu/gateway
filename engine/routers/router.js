@@ -12,7 +12,6 @@ router.get("/", async (req, res) => {
   const filteredFunctions = JSON.parse(JSON.stringify(functions));
   delete filteredFunctions.superAdmin;
   delete filteredFunctions.engines;
-  console.log(filteredFunctions);
   res.status(200).json({ data: filteredFunctions });
 });
 
