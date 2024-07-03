@@ -1,13 +1,14 @@
+const axios = require("axios");
 const headerControl = async (req, res, next) => {
   const requestBody = req.body;
   const requestPath = req.path;
   const requestMethod = req.method;
 
-  if (requestPath != "/") {
+  if (requestPath !== "/") {
     res.status(400).json({
       messages: {
         error: requestPath,
-        errorMessage: "Bad Request",
+        errorMessage: "Permintaan Salah",
       },
     });
     return;
@@ -22,7 +23,7 @@ const headerControl = async (req, res, next) => {
     );
     res.sendStatus(200);
   } catch (error) {
-    console.error("Error sending message:", error);
+    console.error("Kesalahan mengirim pesan:", error);
     res.sendStatus(500);
   }
 
