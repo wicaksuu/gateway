@@ -43,7 +43,15 @@ const Switch = async (data, bot) => {
   let replay = "";
   let options = {
     parse_mode: "Markdown",
-    reply_markup: {},
+    reply_markup: {
+      inline_keyboard: [
+        [
+          { text: "Saldo", callback_data: "/saldo" },
+          { text: "Pilih Work Code", callback_data: "/workcode" },
+        ],
+        [{ text: "Get ID", callback_data: "/myid" }],
+      ],
+    },
   };
 
   if (!id) {
@@ -55,15 +63,7 @@ const Switch = async (data, bot) => {
     case "/start":
       replay =
         "*Selamat datang di BOT Auto Absen*\nUntuk melakukan pembuatan akun dan pengisian saldo silahkan menghubungi @admin\nDaftar Layanan";
-      options.reply_markup = {
-        inline_keyboard: [
-          [
-            { text: "Saldo", callback_data: "/saldo" },
-            { text: "Pilih Work Code", callback_data: "/workcode" },
-          ],
-          [{ text: "Get ID", callback_data: "/myid" }],
-        ],
-      };
+
       break;
     case "/myid":
       replay = `*Informasi Telegram @${username} :*\n\n`;
@@ -157,15 +157,7 @@ const Switch = async (data, bot) => {
         replay =
           "*Akun anda belum terdaftar*\n\nApabila anda tertarik dengan layanan ini silahkan menghubungi @admin";
       }
-      options.reply_markup = {
-        inline_keyboard: [
-          [
-            { text: "Saldo", callback_data: "/saldo" },
-            { text: "Pilih Work Code", callback_data: "/workcode" },
-          ],
-          [{ text: "Get ID", callback_data: "/myid" }],
-        ],
-      };
+
       break;
 
     case "/workcode":
@@ -223,15 +215,7 @@ const Switch = async (data, bot) => {
       } else {
         replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
       }
-      options.reply_markup = {
-        inline_keyboard: [
-          [
-            { text: "Saldo", callback_data: "/saldo" },
-            { text: "Pilih Work Code", callback_data: "/workcode" },
-          ],
-          [{ text: "Get ID", callback_data: "/myid" }],
-        ],
-      };
+
       break;
 
     case "/cekin":
@@ -322,15 +306,7 @@ const Switch = async (data, bot) => {
       } else {
         replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
       }
-      options.reply_markup = {
-        inline_keyboard: [
-          [
-            { text: "Saldo", callback_data: "/saldo" },
-            { text: "Pilih Work Code", callback_data: "/workcode" },
-          ],
-          [{ text: "Get ID", callback_data: "/myid" }],
-        ],
-      };
+
       break;
     case "/cekout":
       user = await UserModel.findOne({ chatIdTelegram: id });
@@ -420,26 +396,11 @@ const Switch = async (data, bot) => {
       } else {
         replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
       }
-      options.reply_markup = {
-        inline_keyboard: [
-          [
-            { text: "Saldo", callback_data: "/saldo" },
-            { text: "Pilih Work Code", callback_data: "/workcode" },
-          ],
-          [{ text: "Get ID", callback_data: "/myid" }],
-        ],
-      };
+
       break;
     default:
       replay = "*Command tidak tersedia*";
-      options.reply_markup = {
-        inline_keyboard: [
-          [
-            { text: "Saldo", callback_data: "/saldo" },
-            { text: "Pilih Work Code", callback_data: "/workcode" },
-          ],
-        ],
-      };
+
       break;
   }
 
