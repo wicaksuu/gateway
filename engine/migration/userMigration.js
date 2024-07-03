@@ -17,7 +17,7 @@ async function migrateUsers() {
     async (answer) => {
       if (answer.toLowerCase() === "yes") {
         try {
-          await UserModel.collection.drop();
+          await mongoose.connection.dropDatabase();
           console.log("Database lama berhasil dihapus");
         } catch (error) {
           console.error("Gagal menghapus database lama:", error);
@@ -30,9 +30,11 @@ async function migrateUsers() {
         {
           name: "Wicak Bayu",
           username: "wicaksu",
+          nip: "wicaksu",
           whatsapp: "082244456708",
           password: await bcrypt.hash("Jack03061997", 10),
           role: "admin",
+          chatIdTelegram: "1218095835",
           permission: { read: true, write: true },
           photo:
             "https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg",

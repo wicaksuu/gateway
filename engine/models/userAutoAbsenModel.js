@@ -22,6 +22,17 @@ const userAutoAbsenSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    latitude: {
+      type: String,
+      required: true,
+    },
+    longitude: {
+      type: String,
+      required: true,
+    },
+    apiKey: {
+      type: String,
+    },
     url: {
       type: String,
       required: true,
