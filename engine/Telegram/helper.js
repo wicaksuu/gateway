@@ -1,6 +1,12 @@
 const UserModel = require("../models/userModel");
 const UserAutoAbsenModel = require("../models/userAutoAbsenModel");
-const { Login, getWorkCode, CekPresensi, Presensi } = require("./autoAbsen");
+const {
+  Login,
+  getWorkCode,
+  CekPresensi,
+  Presensi,
+  formatRupiah,
+} = require("./autoAbsen");
 
 const Switch = async (data, bot) => {
   let {
@@ -138,7 +144,11 @@ const Switch = async (data, bot) => {
             }
           }
 
-          replay = `*Hai ${name}*\nNIP anda : ${nip}\nImei anda : ${userAutoAbsen.imei}\nUrl layanan : ${userAutoAbsen.url}\nToken : ${userAutoAbsen.apiKey}\nPesan : ${pesan}\nSisa saldo : ${balance}\n`;
+          replay = `*Hai ${name}*\nNIP anda : ${nip}\nImei anda : ${
+            userAutoAbsen.imei
+          }\nUrl layanan : ${userAutoAbsen.url}\nToken : ${
+            userAutoAbsen.apiKey
+          }\nPesan : ${pesan}\nSisa saldo : ${formatRupiah(balance)}\n`;
         } else {
           replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
         }
@@ -264,7 +274,17 @@ const Switch = async (data, bot) => {
                     user.balance = lastBalance;
                   }
                   await user.save();
-                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, sisa saldo anda adalah : ${lastBalance}`;
+                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${
+                    respPresensi.result.message
+                  }\nNama : ${respPresensi.result.nama}\nDinas : ${
+                    respPresensi.result.departemen
+                  }\nJarak : ${respPresensi.result.jarak}\nType : ${
+                    respPresensi.result.checktype
+                  }\nWaktu : ${
+                    respPresensi.result.waktu
+                  }\n\nTerimakasih telah menggunakan jasa kami, sisa saldo anda adalah : ${formatRupiah(
+                    lastBalance
+                  )}`;
                 } else {
                   replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
                 }
@@ -343,7 +363,17 @@ const Switch = async (data, bot) => {
                     user.balance = lastBalance;
                   }
                   await user.save();
-                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, sisa saldo anda adalah : ${lastBalance}`;
+                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${
+                    respPresensi.result.message
+                  }\nNama : ${respPresensi.result.nama}\nDinas : ${
+                    respPresensi.result.departemen
+                  }\nJarak : ${respPresensi.result.jarak}\nType : ${
+                    respPresensi.result.checktype
+                  }\nWaktu : ${
+                    respPresensi.result.waktu
+                  }\n\nTerimakasih telah menggunakan jasa kami, sisa saldo anda adalah : ${formatRupiah(
+                    lastBalance
+                  )}`;
                 } else {
                   replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
                 }

@@ -181,4 +181,8 @@ const randomKoordinat = async function randomKoordinat(latitude, longitude) {
   );
 };
 
-module.exports = { Login, getWorkCode, Presensi, CekPresensi };
+const formatRupiah = (nominal) => {
+  return `Rp. ${nominal.toLocaleString()} ,-`;
+};
+
+module.exports = { Login, getWorkCode, Presensi, CekPresensi, formatRupiah };
