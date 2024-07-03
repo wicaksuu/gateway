@@ -34,6 +34,13 @@ async function migrateTelegramBots() {
           deskripsi: "Bot ini digunakan untuk mengirim pesan.",
           isActive: true,
         },
+        {
+          name: "Bot Auto Absen",
+          username: "@my_absen_online_bot",
+          token: "6723275259:AAEuLPp-CvYQSioGZjvpqJ4rLyAP6b8vT80",
+          deskripsi: "Bot ini digunakan untuk mempermudah presensi.",
+          isActive: true,
+        },
       ];
 
       try {

@@ -48,7 +48,7 @@ const Switch = async (data, bot) => {
   switch (key) {
     case "/start":
       replay =
-        "*Selamat datang di BOT Auto Absen*\nUntuk melakukan pembuatan akun dan pengisian saldo silahkan menghubungi @wicakbay\nDaftar Layanan";
+        "*Selamat datang di BOT Auto Absen*\nUntuk melakukan pembuatan akun dan pengisian saldo silahkan menghubungi @admin\nDaftar Layanan";
       options.reply_markup = {
         inline_keyboard: [
           [
@@ -144,7 +144,7 @@ const Switch = async (data, bot) => {
         }
       } else {
         replay =
-          "*Akun anda belum terdaftar*\n\nApabila anda tertarik dengan layanan ini silahkan menghubungi @wicakbay";
+          "*Akun anda belum terdaftar*\n\nApabila anda tertarik dengan layanan ini silahkan menghubungi @admin";
       }
       break;
 
