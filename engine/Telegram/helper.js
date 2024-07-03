@@ -10,7 +10,6 @@ const Switch = async function (data, bot) {
     id = data.callback_query.message.chat.id;
     type = data.callback_query.message.chat.type;
     text = data.callback_query.data + " ";
-    keyboard = data.data;
   }
 
   const key = text.split(" ")[0];
@@ -46,13 +45,13 @@ const Switch = async function (data, bot) {
       replay = "*Sisa saldo anda adalah* : Rp.0,-";
       break;
     case "/account":
-      replay = "*Akun anda : ";
+      replay = "*Akun anda* : ";
       break;
     case "/cekin":
-      replay = msg;
+      replay = "Absen masuk " + msg;
       break;
     case "/cekout":
-      replay = msg;
+      replay = "Absen pulang " + msg;
       break;
 
     default:
