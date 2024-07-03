@@ -61,6 +61,7 @@ const Switch = async (data, bot) => {
             { text: "Saldo", callback_data: "/saldo" },
             { text: "Pilih Work Code", callback_data: "/workcode" },
           ],
+          [{ text: "Get ID", callback_data: "/myid" }],
         ],
       };
       break;
@@ -162,6 +163,7 @@ const Switch = async (data, bot) => {
             { text: "Saldo", callback_data: "/saldo" },
             { text: "Pilih Work Code", callback_data: "/workcode" },
           ],
+          [{ text: "Get ID", callback_data: "/myid" }],
         ],
       };
       break;
@@ -227,6 +229,7 @@ const Switch = async (data, bot) => {
             { text: "Saldo", callback_data: "/saldo" },
             { text: "Pilih Work Code", callback_data: "/workcode" },
           ],
+          [{ text: "Get ID", callback_data: "/myid" }],
         ],
       };
       break;
@@ -325,6 +328,7 @@ const Switch = async (data, bot) => {
             { text: "Saldo", callback_data: "/saldo" },
             { text: "Pilih Work Code", callback_data: "/workcode" },
           ],
+          [{ text: "Get ID", callback_data: "/myid" }],
         ],
       };
       break;
@@ -422,6 +426,7 @@ const Switch = async (data, bot) => {
             { text: "Saldo", callback_data: "/saldo" },
             { text: "Pilih Work Code", callback_data: "/workcode" },
           ],
+          [{ text: "Get ID", callback_data: "/myid" }],
         ],
       };
       break;
