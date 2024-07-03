@@ -11,7 +11,9 @@ const { functions, allFunctions } = loadFunctions(functionsDir);
 router.get("/", async (req, res) => {
   const filteredFunctions = JSON.parse(JSON.stringify(functions));
   delete filteredFunctions.superAdmin;
+  delete filteredFunctions.admin;
   delete filteredFunctions.engines;
+  delete filteredFunctions.engine;
   res.status(200).json({ data: filteredFunctions });
 });
 
@@ -33,22 +35,14 @@ const loadFunctionModules = (currentObj, basePath) => {
 loadFunctionModules(allFunctions, functionsDir);
 
 router.post("/", async (req, res, next) => {
-  const { query, params, service } = req.body;
+  const { query, params } = req.body;
   if (!query || !params) {
     return res.status(400).json({ message: "Query dan params harus ada" });
   }
-  if (service) {
-    if (query && functionModules[query]) {
-      executeFunction(query, params, req, res, next);
-    } else {
-      return res.status(404).json({ message: "Function not found" });
-    }
-  } else {
-    if (!functionModules[query]) {
-      return res.status(404).json({ message: "Function not found" });
-    }
-    executeFunction(query, params, req, res, next);
+  if (!functionModules[query]) {
+    return res.status(404).json({ message: "Function not found" });
   }
+  executeFunction(query, params, req, res, next);
 });
 
 const executeFunction = async (query, params, req, res, next) => {

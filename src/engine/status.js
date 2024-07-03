@@ -1,5 +1,5 @@
 const si = require("systeminformation");
-const authMiddleware = require("../engine/middleware/authMiddleware");
+const authMiddleware = require("../../engine/middleware/authMiddleware");
 
 module.exports = {
   name: "status",
