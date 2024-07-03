@@ -156,6 +156,14 @@ const Switch = async (data, bot) => {
         replay =
           "*Akun anda belum terdaftar*\n\nApabila anda tertarik dengan layanan ini silahkan menghubungi @admin";
       }
+      options.reply_markup = {
+        inline_keyboard: [
+          [
+            { text: "Saldo", callback_data: "/saldo" },
+            { text: "Pilih Work Code", callback_data: "/workcode" },
+          ],
+        ],
+      };
       break;
 
     case "/workcode":
@@ -213,6 +221,14 @@ const Switch = async (data, bot) => {
       } else {
         replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
       }
+      options.reply_markup = {
+        inline_keyboard: [
+          [
+            { text: "Saldo", callback_data: "/saldo" },
+            { text: "Pilih Work Code", callback_data: "/workcode" },
+          ],
+        ],
+      };
       break;
 
     case "/cekin":
@@ -303,6 +319,14 @@ const Switch = async (data, bot) => {
       } else {
         replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
       }
+      options.reply_markup = {
+        inline_keyboard: [
+          [
+            { text: "Saldo", callback_data: "/saldo" },
+            { text: "Pilih Work Code", callback_data: "/workcode" },
+          ],
+        ],
+      };
       break;
     case "/cekout":
       user = await UserModel.findOne({ chatIdTelegram: id });
@@ -392,9 +416,25 @@ const Switch = async (data, bot) => {
       } else {
         replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
       }
+      options.reply_markup = {
+        inline_keyboard: [
+          [
+            { text: "Saldo", callback_data: "/saldo" },
+            { text: "Pilih Work Code", callback_data: "/workcode" },
+          ],
+        ],
+      };
       break;
     default:
       replay = "*Command tidak tersedia*";
+      options.reply_markup = {
+        inline_keyboard: [
+          [
+            { text: "Saldo", callback_data: "/saldo" },
+            { text: "Pilih Work Code", callback_data: "/workcode" },
+          ],
+        ],
+      };
       break;
   }
 
