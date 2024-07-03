@@ -32,10 +32,12 @@ module.exports = {
         data: {
           user: {
             id: user._id,
+            name: user.name,
             username: user.username,
             permission: user.permission,
             whatsapp: user.whatsapp,
             role: user.role,
+            photo: user.photo,
           },
         },
       });

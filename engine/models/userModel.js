@@ -13,9 +13,13 @@ const userSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    whatsapp: {
+    name: {
       type: String,
       required: true,
+    },
+    whatsapp: {
+      type: String,
+      required: false,
       unique: true,
     },
     password: {
@@ -37,6 +41,15 @@ const userSchema = new mongoose.Schema(
     otpExpires: {
       type: Date,
       required: false,
+    },
+    photo: {
+      type: String,
+      required: false,
+    },
+    chatIdTelegram: {
+      type: String,
+      required: false,
+      unique: true,
     },
   },
   { timestamps: true }
