@@ -1,5 +1,5 @@
 const Switch = async function (data, bot) {
-  let first_name, last_name, username, id, type, text, keyboard;
+  let first_name, last_name, username, id, type, text;
   if (data.message) {
     ({ first_name, last_name, username } = data.message.from);
     id = data.message.chat.id;
@@ -39,6 +39,16 @@ const Switch = async function (data, bot) {
           ],
         ],
       };
+      break;
+    case "/myid":
+      replay = `*Informasi Telegram @${username} :*\n\n`;
+      if (isGroup) {
+        replay += "Nama Grub : " + groupName + "\n";
+        replay += "Chat Id : " + id + "\n";
+      } else {
+        replay += "Nama : " + groupName + "\n";
+        replay += "Chat Id : " + id + "\n";
+      }
       break;
 
     case "/saldo":
