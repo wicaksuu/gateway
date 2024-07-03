@@ -17,7 +17,7 @@ async function migrateTelegramBots() {
     async (answer) => {
       if (answer.toLowerCase() === "yes") {
         try {
-          await mongoose.connection.dropDatabase();
+          await TelegramBotModel.collection.drop();
           console.log("Database lama berhasil dihapus");
         } catch (error) {
           console.error("Gagal menghapus database lama:", error);

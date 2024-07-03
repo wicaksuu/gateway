@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-const User = require("../models/userModel");
+const UserModel = require("../models/userModel");
 const connectDB = require("../config/databaseConfig");
 const readline = require("readline");
 
@@ -17,7 +17,7 @@ async function migrateUsers() {
     async (answer) => {
       if (answer.toLowerCase() === "yes") {
         try {
-          await mongoose.connection.dropDatabase();
+          await UserModel.collection.drop();
           console.log("Database lama berhasil dihapus");
         } catch (error) {
           console.error("Gagal menghapus database lama:", error);
@@ -48,7 +48,7 @@ async function migrateUsers() {
       ];
 
       try {
-        await User.insertMany(users);
+        await UserModel.insertMany(users);
         console.log("Migrasi user berhasil");
       } catch (error) {
         console.error("Gagal melakukan migrasi user:", error);

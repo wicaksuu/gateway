@@ -1,17 +1,9 @@
-const Switch = async function (data, bot) {
-  let first_name, last_name, username, id, type, text;
-  if (data.message) {
-    ({ first_name, last_name, username } = data.message.from);
-    id = data.message.chat.id;
-    type = data.message.chat.type;
-    text = data.message.text + " ";
-  } else {
-    ({ first_name, last_name, username } = data.callback_query.message.from);
-    id = data.callback_query.message.chat.id;
-    type = data.callback_query.message.chat.type;
-    text = data.callback_query.data + " ";
-  }
+const UserModel = require("../models/userModel");
+const UserAutoAbsenModel = require("../models/userAutoAbsenModel");
 
+const Switch = async function (data, bot) {
+  const { first_name, last_name, username, id, type, text } =
+    data.message || data.callback_query.message;
   const key = text.split(" ")[0];
   const msg = text.slice(key.length + 1).trim();
   let replay = "";
@@ -21,12 +13,15 @@ const Switch = async function (data, bot) {
   };
 
   const groupName =
-    type === "private" ? `${first_name} ${last_name}` : data.message.chat.title;
+    type === "private"
+      ? `${first_name} ${last_name}`
+      : data.message?.chat.title;
   const isGroup = type !== "private";
 
   switch (key) {
     case "/start":
-      replay = "*Selamat datang di BOT Auto Absen*\n\nLayanan";
+      replay =
+        "*Selamat datang di BOT Auto Absen*\nUntuk melakukan pembuatan akun dan pengisian saldo silahkan menghubungi @wicakbay\nDaftar Layanan";
       options.reply_markup = {
         inline_keyboard: [
           [
@@ -42,26 +37,32 @@ const Switch = async function (data, bot) {
       break;
     case "/myid":
       replay = `*Informasi Telegram @${username} :*\n\n`;
-      if (isGroup) {
-        replay += "Nama Grub : " + groupName + "\n";
-        replay += "Chat Id : " + id + "\n";
-      } else {
-        replay += "Nama : " + groupName + "\n";
-        replay += "Chat Id : " + id + "\n";
-      }
+      replay += isGroup
+        ? `Nama Grub : ${groupName}\nChat Id : ${id}\n`
+        : `Nama : ${groupName}\nChat Id : ${id}\n`;
       break;
 
     case "/saldo":
-      replay = "*Sisa saldo anda adalah* : Rp.0,-";
+      const user = await UserModel.findOne({ chatIdTelegram: id });
+      console.log(user);
+      if (user) {
+        const { name, balance, nip } = user;
+        replay = `*Hai ${name}*\n`;
+        replay += `NIP anda : ${nip}\n`;
+        replay += `Sisa anda : ${balance}\n`;
+      } else {
+        replay =
+          "*Akun anda belum terdaftar*\n\nApabila anda tertarik dengan layanan ini silahkan menghubungi @wicakbay";
+      }
       break;
     case "/account":
       replay = "*Akun anda* : ";
       break;
     case "/cekin":
-      replay = "Absen masuk " + msg;
+      replay = `Absen masuk ${msg}`;
       break;
     case "/cekout":
-      replay = "Absen pulang " + msg;
+      replay = `Absen pulang ${msg}`;
       break;
 
     default:
