@@ -1,8 +1,18 @@
 const Switch = async function (data, bot) {
-  const { first_name, last_name, username } = data.message.from;
-  const chatId = data.message.chat.id;
-  const type = data.message.chat.type;
-  const text = data.message.text + " ";
+  let first_name, last_name, username, id, type, text, keyboard;
+  if (data.message) {
+    ({ first_name, last_name, username } = data.message.from);
+    id = data.message.chat.id;
+    type = data.message.chat.type;
+    text = data.message.text + " ";
+  } else {
+    ({ first_name, last_name, username } = data.callback_query.message.from);
+    id = data.callback_query.message.chat.id;
+    type = data.callback_query.message.chat.type;
+    text = data.callback_query.data + " ";
+    keyboard = data.data;
+  }
+
   const key = text.split(" ")[0];
   const msg = text.slice(key.length + 1).trim();
   let replay = "";
@@ -32,12 +42,25 @@ const Switch = async function (data, bot) {
       };
       break;
 
+    case "/saldo":
+      replay = "*Sisa saldo anda adalah* : Rp.0,-";
+      break;
+    case "/account":
+      replay = "*Akun anda : ";
+      break;
+    case "/cekin":
+      replay = msg;
+      break;
+    case "/cekout":
+      replay = msg;
+      break;
+
     default:
       replay = "*Command tidak tersedia*";
       break;
   }
 
-  bot.sendMessage(chatId, replay, options);
+  bot.sendMessage(id, replay, options);
   return;
 };
 
