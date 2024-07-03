@@ -53,9 +53,8 @@ const Switch = async (data, bot) => {
         inline_keyboard: [
           [
             { text: "Saldo", callback_data: "/saldo" },
-            { text: "Account", callback_data: "/account" },
+            { text: "Pilih Work Code", callback_data: "/workcode" },
           ],
-          [{ text: "Pilih Work Code", callback_data: "/workcode" }],
         ],
       };
       break;
@@ -193,13 +192,13 @@ const Switch = async (data, bot) => {
                 respWorkCode.result[0].hari.nama +
                 "*";
             } else {
-              replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+              replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
             }
           } else {
-            replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+            replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
           }
         } else {
-          replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+          replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
         }
       } else {
         replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
@@ -267,16 +266,16 @@ const Switch = async (data, bot) => {
                   await user.save();
                   replay = `*Hai ${name}*\n\nHasil Presensi : ${respPresensi.result.message}\n\nTerimakasih telah menggunakan jasa kami, sisa saldo anda adalah : ${lastBalance}`;
                 } else {
-                  replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+                  replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
                 }
               } else {
-                replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+                replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
               }
             } else {
-              replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+              replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
             }
           } else {
-            replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+            replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
           }
         } else {
           replay = `*Hai ${name}*\nMohon maaf saldo anda tidak cukup untuk melakukan presensi!`;
@@ -346,16 +345,16 @@ const Switch = async (data, bot) => {
                   await user.save();
                   replay = `*Hai ${name}*\n\nHasil Presensi : ${respPresensi.result.message}\n\nTerimakasih telah menggunakan jasa kami, sisa saldo anda adalah : ${lastBalance}`;
                 } else {
-                  replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+                  replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
                 }
               } else {
-                replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+                replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
               }
             } else {
-              replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+              replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
             }
           } else {
-            replay = `*Hai ${name}*\nSilahkan pilih button *Account* akun anda munkin belum terlogin!`;
+            replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
           }
         } else {
           replay = `*Hai ${name}*\nMohon maaf saldo anda tidak cukup untuk melakukan presensi!`;
