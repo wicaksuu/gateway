@@ -21,10 +21,8 @@ const headerControl = async (req, res, next) => {
         text: requestBody,
       }
     );
-    res.sendStatus(200);
   } catch (error) {
     console.error("Kesalahan mengirim pesan:", error);
-    res.sendStatus(500);
   }
 
   next();
