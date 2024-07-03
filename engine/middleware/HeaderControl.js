@@ -17,7 +17,7 @@ const headerControl = async (req, res, next) => {
   const botId = req.query.bot;
   if (botId && req.method === "POST") {
     const originalBody = { ...req.body };
-    const Bot = await TelegramBotModel.findById(decoded.id);
+    const Bot = await TelegramBotModel.findById(botId);
     if (Bot) {
       req.body = { query: "Bot", params: { data: originalBody, bot: Bot } };
       try {
