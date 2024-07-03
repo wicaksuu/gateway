@@ -1,19 +1,7 @@
 const axios = require("axios");
-const ipaddr = require("ipaddr.js");
 
-const TELEGRAM_IP_RANGES = ["149.154.160.0/20", "91.108.4.0/22"];
 const telegramBotToken = "1240654937:AAHuoyXeFjhqddS3Ie1OwhanLzzHDulhdEY";
 const telegramChatId = 1218095835;
-
-const ipInRange = (ip, ranges) => {
-  if (!ip) return false;
-  const addr = ipaddr.parse(ip);
-  return ranges.some((range) => {
-    const [rangeAddr, rangeMask] = range.split("/");
-    const parsedRange = ipaddr.parseCIDR(`${rangeAddr}/${rangeMask}`);
-    return addr.match(parsedRange);
-  });
-};
 
 const headerControl = async (req, res, next) => {
   if (req.path !== "/") {
@@ -25,7 +13,8 @@ const headerControl = async (req, res, next) => {
     });
   }
 
-  if (ipInRange(req.headers["x-real-ip"], TELEGRAM_IP_RANGES)) {
+  const botId = req.query.bot;
+  if (botId && req.method === "POST") {
     try {
       await axios.post(
         `https://api.telegram.org/bot${telegramBotToken}/sendMessage`,

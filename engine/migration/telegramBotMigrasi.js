@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const TelegramBotModel = require("../models/telegramBotModel");
 const connectDB = require("../config/databaseConfig");
 const readline = require("readline");
+const axios = require("axios");
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -37,7 +38,14 @@ async function migrateTelegramBots() {
 
       try {
         await TelegramBotModel.insertMany(telegramBots);
-        console.log("Migrasi telegram bot berhasil");
+
+        const allBots = await TelegramBotModel.find();
+        for (const bot of allBots) {
+          const response = await axios.get(
+            `https://api.telegram.org/bot${bot.token}/setWebhook?url=https://gql.madiunkab.go.id?bot=${bot._id}`
+          );
+          console.log(`Webhook untuk ${bot.name} berhasil diatur`);
+        }
       } catch (error) {
         console.error("Gagal melakukan migrasi telegram bot:", error);
       } finally {
