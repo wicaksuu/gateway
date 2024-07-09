@@ -76,7 +76,7 @@ const Switch = async (data, bot) => {
         "*Perpanjang Masa Aktif*\nSilahkan silahkan menghubungi admin kami (Biaya per bulan Rp. 50.000,-) \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
       break;
 
-    case "/fomat":
+    case "/format":
       replay =
         "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)\nURL : https://absen.madiunkab.go.id";
       break;
