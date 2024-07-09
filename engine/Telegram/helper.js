@@ -218,9 +218,11 @@ const Switch = async (data, bot) => {
               second: "2-digit",
             }
           );
-          replay += `Valid Until: ${validUntilDate}\n\n`;
-
-          replay = `*Hai ${name}*\nNIP anda : ${nip}\nImei anda : ${userAutoAbsen.imei}\nUrl layanan : ${userAutoAbsen.url}\nToken : ${userAutoAbsen.apiKey}\nPesan : ${pesan}\nAktif Sampai: ${validUntilDate}\n\n`;
+          const currentDate = new Date();
+          const validUntil = new Date(userAutoAbsen.validUntil);
+          const activeStatus =
+            validUntil > currentDate ? validUntilDate : "Layanan Tidak Aktif";
+          replay = `*Hai ${name}*\nNIP anda : ${nip}\nImei anda : ${userAutoAbsen.imei}\nUrl layanan : ${userAutoAbsen.url}\nToken : ${userAutoAbsen.apiKey}\nPesan : ${pesan}\nAktif Sampai: ${activeStatus}\n\n`;
         } else {
           replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
         }
@@ -347,7 +349,7 @@ const Switch = async (data, bot) => {
 
                   replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${validUntilDate}`;
                 } else {
-                  replay = `*Hai ${name}*\nAkun anda sudah kadaluarsa, silahkan melakukan penambahan masa aktif!`;
+                  replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
                 }
               } else {
                 replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
@@ -356,7 +358,7 @@ const Switch = async (data, bot) => {
               replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
             }
           } else {
-            replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
+            replay = `*Hai ${name}*\nMasa aktif layanan telah habis, mohon melakukan perpanjangan masa aktif!`;
           }
         } else {
           replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
@@ -424,7 +426,7 @@ const Switch = async (data, bot) => {
 
                   replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${validUntilDate}`;
                 } else {
-                  replay = `*Hai ${name}*\nAkun anda sudah kadaluarsa, silahkan melakukan penambahan masa aktif!`;
+                  replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
                 }
               } else {
                 replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
@@ -433,7 +435,7 @@ const Switch = async (data, bot) => {
               replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
             }
           } else {
-            replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
+            replay = `*Hai ${name}*\nMasa aktif layanan telah habis, mohon melakukan perpanjangan masa aktif!`;
           }
         } else {
           replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
