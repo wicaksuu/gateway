@@ -86,14 +86,16 @@ const Switch = async (data, bot) => {
         });
         if (user && user.length > 0) {
           user.forEach((usr) => {
-            replay = `*Informasi Telegram @${user.name} :*\n\n`;
+            replay = `*Informasi Telegram @${usr.name} :*\n\n`;
             bot.sendMessage(id, replay, options);
           });
+
+          replay = `*User telah ditampilkan*`;
         } else {
-          bot.sendMessage(id, "*User tidak ditemukan*", options);
+          replay = `*User tidak ditemukan*`;
         }
       } else {
-        bot.sendMessage(id, "*Auth invalid*", options);
+        replay = `*Auth invalid*`;
       }
     case "/saldo":
       user = await UserModel.findOne({ chatIdTelegram: id });
