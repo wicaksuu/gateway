@@ -53,7 +53,7 @@ const Switch = async (data, bot) => {
     reply_markup: {
       inline_keyboard: [
         [
-          { text: "Saldo", callback_data: "/saldo" },
+          { text: "Info", callback_data: "/info" },
           { text: "Pilih Work Code", callback_data: "/workcode" },
         ],
         [{ text: "Get ID", callback_data: "/myid" }],
@@ -120,7 +120,7 @@ const Switch = async (data, bot) => {
         replay = `*Auth invalid*`;
       }
       break;
-    case "/saldo":
+    case "/info":
       user = await UserModel.findOne({ chatIdTelegram: id });
       if (user) {
         name = user.name;
@@ -253,13 +253,13 @@ const Switch = async (data, bot) => {
                 respWorkCode.result[0].hari.nama +
                 "*";
             } else {
-              replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+              replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
             }
           } else {
-            replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+            replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
           }
         } else {
-          replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+          replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
         }
       } else {
         replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
@@ -274,12 +274,16 @@ const Switch = async (data, bot) => {
         balance = parseFloat(user.balance);
         nip = user.nip;
         _id = user._id;
-        if (
-          balance > parseFloat(process.env.PRICE || 1000) ||
-          user.role === "admin"
-        ) {
-          userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
+
+        userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
+        if (userAutoAbsen) {
           if (userAutoAbsen) {
+            if (user.role !== "admin") {
+              if (userAutoAbsen.validUntil < new Date()) {
+                replay = `*Hai ${name}*\nAkun anda sudah kadaluarsa, silahkan melakukan penambahan masa aktif!`;
+                return;
+              }
+            }
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
             apiKey = userAutoAbsen.apiKey;
@@ -313,47 +317,24 @@ const Switch = async (data, bot) => {
                   url
                 );
                 if (respPresensi.result) {
-                  if (user.role === "admin") {
-                    if (balance < 0) {
-                      lastBalance = 0;
-                    } else {
-                      lastBalance = balance;
-                    }
-                    user.balance = lastBalance;
-                  } else {
-                    lastBalance =
-                      balance - parseFloat(process.env.PRICE || 1000);
-                    user.balance = lastBalance;
-                  }
-                  await user.save();
-                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${
-                    respPresensi.result.message
-                  }\nNama : ${respPresensi.result.nama}\nDinas : ${
-                    respPresensi.result.departemen
-                  }\nJarak : ${respPresensi.result.jarak}\nType : ${
-                    respPresensi.result.checktype
-                  }\nWaktu : ${
-                    respPresensi.result.waktu
-                  }\n\nTerimakasih telah menggunakan jasa kami, sisa saldo anda adalah : ${formatRupiah(
-                    lastBalance
-                  )}`;
+                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${userAutoAbsen.validUntil}`;
                 } else {
-                  replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+                  replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
                 }
               } else {
-                replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+                replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
               }
             } else {
-              replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+              replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
             }
           } else {
-            replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+            replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
           }
         } else {
-          replay = `*Hai ${name}*\nMohon maaf saldo anda tidak cukup untuk melakukan presensi!`;
+          replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
         }
       } else {
-        replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
+        replay = `*Hai ${name}*\nAnda tidak memiliki account!`;
       }
 
       break;
@@ -364,12 +345,16 @@ const Switch = async (data, bot) => {
         balance = parseFloat(user.balance);
         nip = user.nip;
         _id = user._id;
-        if (
-          balance > parseFloat(process.env.PRICE || 1000) ||
-          user.role === "admin"
-        ) {
-          userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
+
+        userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
+        if (userAutoAbsen) {
           if (userAutoAbsen) {
+            if (user.role !== "admin") {
+              if (userAutoAbsen.validUntil < new Date()) {
+                replay = `*Hai ${name}*\nAkun anda sudah kadaluarsa, silahkan melakukan penambahan masa aktif!`;
+                return;
+              }
+            }
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
             apiKey = userAutoAbsen.apiKey;
@@ -403,49 +388,25 @@ const Switch = async (data, bot) => {
                   url
                 );
                 if (respPresensi.result) {
-                  if (user.role === "admin") {
-                    if (balance < 0) {
-                      lastBalance = 0;
-                    } else {
-                      lastBalance = balance;
-                    }
-                    user.balance = lastBalance;
-                  } else {
-                    lastBalance =
-                      balance - parseFloat(process.env.PRICE || 1000);
-                    user.balance = lastBalance;
-                  }
-                  await user.save();
-                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${
-                    respPresensi.result.message
-                  }\nNama : ${respPresensi.result.nama}\nDinas : ${
-                    respPresensi.result.departemen
-                  }\nJarak : ${respPresensi.result.jarak}\nType : ${
-                    respPresensi.result.checktype
-                  }\nWaktu : ${
-                    respPresensi.result.waktu
-                  }\n\nTerimakasih telah menggunakan jasa kami, sisa saldo anda adalah : ${formatRupiah(
-                    lastBalance
-                  )}`;
+                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${userAutoAbsen.validUntil}`;
                 } else {
-                  replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+                  replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
                 }
               } else {
-                replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+                replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
               }
             } else {
-              replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+              replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
             }
           } else {
-            replay = `*Hai ${name}*\nSilahkan pilih button *Saldo* akun anda munkin belum terlogin!`;
+            replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
           }
         } else {
-          replay = `*Hai ${name}*\nMohon maaf saldo anda tidak cukup untuk melakukan presensi!`;
+          replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
         }
       } else {
-        replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
+        replay = `*Hai ${name}*\nAnda tidak memiliki account!`;
       }
-
       break;
     default:
       replay = "*Command tidak tersedia*";
