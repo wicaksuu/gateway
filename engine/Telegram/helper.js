@@ -77,14 +77,18 @@ const Switch = async (data, bot) => {
       break;
 
     case "/format":
-      replay =
-        "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : ";
+      if (id === 1218095835 || id === 6915731358) {
+        replay =
+          "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : ";
 
-      bot.sendMessage(id, replay, {
-        parse_mode: "Markdown",
-      });
-      replay =
-        "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)";
+        bot.sendMessage(id, replay, {
+          parse_mode: "Markdown",
+        });
+        replay =
+          "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)";
+      } else {
+        replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
+      }
       break;
 
     case "/add":
@@ -131,6 +135,8 @@ const Switch = async (data, bot) => {
         } catch (error) {
           replay = "Gagal membuat user";
         }
+      } else {
+        replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
       }
       break;
 
