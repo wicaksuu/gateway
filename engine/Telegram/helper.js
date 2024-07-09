@@ -76,6 +76,29 @@ const Switch = async (data, bot) => {
         "*Perpanjang Masa Aktif*\nSilahkan silahkan menghubungi admin kami (Biaya per bulan Rp. 50.000,-) \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
       break;
 
+    case "/fomat-add":
+      replay =
+        "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)\nURL : https://absen.madiunkab.go.id";
+      break;
+
+    case "/add":
+      if (id === 1218095835 || id === 6915731358) {
+        const msgArray = msg.split("\n");
+        const nip = msgArray[0].split(" : ")[1].replace(/\s+/g, "");
+        const password = msgArray[1].split(" : ")[1];
+        const url = msgArray[2].split(" : ")[1];
+        const latitude = parseFloat(msgArray[3].split(" : ")[1]);
+        const longitude = parseFloat(msgArray[4].split(" : ")[1]);
+        const chatIdTelegram = msgArray[5].split(" : ")[1].replace(/\s+/g, "");
+        const name = msgArray[6].split(" : ")[1];
+        const imei = msgArray[7].split(":")[1];
+        const userAgent = msgArray[8].split(" : ")[1];
+        const userUrl = msgArray[9].split(" : ")[1];
+
+        replay = `*NIP : ${nip}\n*Password : ${password}\n*URL : ${url}\n*Latitude : ${latitude}\n*Longitude : ${longitude}\n*Chat ID Telegram : ${chatIdTelegram}\n*Nama : ${name}\n*IMEI : ${imei}\n*User Agent : ${userAgent}\n*URL : ${userUrl}`;
+      }
+      break;
+
     case "/tambah":
       if (id === 1218095835 || id === 6915731358) {
         user = await UserModel.findOne({ nip: msg });
