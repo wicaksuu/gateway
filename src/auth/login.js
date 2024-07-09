@@ -7,7 +7,7 @@ dotenv.config();
 
 module.exports = {
   name: "login",
-  description: "User login",
+  description: "User login test",
   params: ["username", "password"],
   paramTypes: {
     username: "string",
@@ -64,7 +64,12 @@ module.exports = {
           expiresIn: "1h",
         }
       );
-
+      res.cookie("authorization", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "Strict",
+        domain: "https://localhost:4321",
+      });
       res.status(200).json({
         data: {
           token: token,
@@ -78,7 +83,6 @@ module.exports = {
         },
       });
     } catch (error) {
-      console.error("Error saat login:", error);
       res
         .status(500)
         .json({ message: { server: "Terjadi kesalahan pada server" } });

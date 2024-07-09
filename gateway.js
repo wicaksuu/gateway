@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cors = require("cors");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -9,6 +10,14 @@ const headerControl = require("./engine/middleware/HeaderControl");
 const apiRoutes = require("./engine/routers/router");
 
 connectDB();
+
+const corsOptions = {
+  origin: "http://localhost:4321", // ganti dengan domain aplikasi Astro.js Anda
+  methods: "GET, POST, PUT, DELETE, OPTIONS",
+  allowedHeaders: "Content-Type, Authorization",
+};
+
+app.use(cors(corsOptions));
 
 app.use(bodyParser.json());
 

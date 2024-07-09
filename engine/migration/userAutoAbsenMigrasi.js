@@ -29,38 +29,15 @@ async function migrateUsers() {
 
       const UserAutoAbsenModels = [
         {
-          name: "WICAKSONO BAYU AJI, S.KOM",
-          nip: "wicaksu",
-          password: "Jack03061997",
-          imei: "3be18a532c24ade2",
-          latitude: "-7.63250691214837",
-          longitude: "111.53012497313115",
+          chatIdTelegram: "489811594",
+          name: "PENTALIANAWATI, S.E.,M.Si",
+          nip: "197603212003122004",
+          password: "197603212003122004",
+          imei: "48ca1b4e277eca0b",
+          latitude: "-7.547674426309224",
+          longitude: "111.65463746058549",
           userAgent:
-            "Dalvik/2.1.0 (Linux; U; Android 13; SM-G985F Build/TP1A.220624.014)",
-          url: "https://absen.madiunkab.go.id",
-        },
-        {
-          chatIdTelegram: "1",
-          name: "DIDIK MUTTAKIM, S,Pd.",
-          nip: "198212272024211011",
-          password: "198212272024211011",
-          imei: "031eed3cc76397db",
-          latitude: "-7.5374",
-          longitude: "111.6068",
-          userAgent:
-            "Dalvik/2.1.0 (Linux; U; Android 10; CPH2179 Build/QP1A.190711.020)",
-          url: "https://absen.madiunkab.go.id",
-        },
-        {
-          chatIdTelegram: "2",
-          name: "HARIS YUTAFIAN, S.Pd.",
-          nip: "198304192024211004",
-          password: "198304192024211004",
-          imei: "b19cf0f29e04399b",
-          latitude: "-7.5427",
-          longitude: "111.6025",
-          userAgent:
-            "	Dalvik/2.1.0 (Linux; U; Android 10; RMX2030 Build/QKQ1.200209.002)",
+            "Dalvik/2.1.0 (Linux; U; Android 10; SM-G975F Build/QP1A.190711.020)",
           url: "https://absen.madiunkab.go.id",
         },
       ];
