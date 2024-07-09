@@ -61,34 +61,6 @@ const Switch = async (data, bot) => {
     },
   };
 
-  if (id === "1218095835") {
-    options = {
-      parse_mode: "Markdown",
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "Saldo", callback_data: "/saldo" },
-            { text: "Pilih Work Code", callback_data: "/workcode" },
-          ],
-          [{ text: "Get ID", callback_data: "/myid" }],
-        ],
-      },
-    };
-  } else {
-    options = {
-      parse_mode: "Markdown",
-      reply_markup: {
-        inline_keyboard: [
-          [
-            { text: "Saldo", callback_data: "/saldo" },
-            { text: "Pilih Work Code", callback_data: "/workcode" },
-          ],
-          [{ text: "Get ID", callback_data: "/myid" }],
-        ],
-      },
-    };
-  }
-
   switch (key) {
     case "/start":
       replay =
@@ -103,7 +75,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/user":
-      if (id === "1218095835") {
+      if (id === 1218095835) {
         user = await UserModel.find({
           $or: [
             { username: msg },
@@ -114,10 +86,7 @@ const Switch = async (data, bot) => {
         });
         if (user && user.length > 0) {
           user.forEach((usr) => {
-            replay = `*Informasi Telegram @${username} :*\n\n`;
-            replay += isGroup
-              ? `Nama Grub : ${groupName}\nChat Id : ${id}\n`
-              : `Nama : ${usr.name}\nChat Id : ${usr.chatIdTelegram}\n`;
+            replay = `*Informasi Telegram @${user.name} :*\n\n`;
             bot.sendMessage(id, replay, options);
           });
         } else {
