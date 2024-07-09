@@ -67,7 +67,7 @@ const Switch = async (data, bot) => {
   switch (key) {
     case "/start":
       replay =
-        "*Selamat datang di BOT Auto Absen*\nUntuk melakukan pembuatan akun dan pengisian saldo silahkan menghubungi\nBiaya layanan sebesar Rp. 50.000,- per bulan \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\n";
+        "*Selamat datang di BOT Auto Absen*\nUntuk melakukan pembuatan akun dan pengisian saldo silahkan menghubungi\n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nBiaya layanan sebesar Rp. 50.000,- per bulan \n";
 
       break;
 
