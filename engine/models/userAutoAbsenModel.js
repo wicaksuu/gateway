@@ -37,6 +37,10 @@ const userAutoAbsenSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    validUntil: {
+      type: Date,
+      required: true,
+    },
   },
   { timestamps: true }
 );

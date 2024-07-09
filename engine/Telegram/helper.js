@@ -85,11 +85,33 @@ const Switch = async (data, bot) => {
           ],
         });
         if (user && user.length > 0) {
-          user.forEach((usr) => {
-            replay = `*Informasi Telegram @${usr.name} :*\n\n`;
+          for (const usr of user) {
+            name = usr.name;
+            balance = usr.balance;
+            nip = usr.nip;
+            _id = usr._id;
+            userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
+            if (userAutoAbsen) {
+              apiKey = userAutoAbsen.apiKey;
+              userAgent = userAutoAbsen.userAgent;
+              imei = userAutoAbsen.imei;
+              url = userAutoAbsen.url;
+              latitude = userAutoAbsen.latitude;
+              longitude = userAutoAbsen.longitude;
+            }
+            replay = `*Informasi User :*\n\n`;
+            replay += `Nama: ${name}\n`;
+            replay += `Saldo: ${formatRupiah(balance)}\n`;
+            replay += `NIP: ${nip}\n`;
+            replay += `API Key: ${apiKey}\n`;
+            replay += `User Agent: ${userAgent}\n`;
+            replay += `IMEI: ${imei}\n`;
+            replay += `URL: ${url}\n`;
+            replay += `Latitude: ${latitude}\n`;
+            replay += `Longitude: ${longitude}\n`;
+            replay += `Valid Until: ${userAutoAbsen.validUntil}\n\n`;
             bot.sendMessage(id, replay, options);
-          });
-
+          }
           replay = `*User telah ditampilkan*`;
         } else {
           replay = `*User tidak ditemukan*`;
@@ -97,6 +119,7 @@ const Switch = async (data, bot) => {
       } else {
         replay = `*Auth invalid*`;
       }
+      break;
     case "/saldo":
       user = await UserModel.findOne({ chatIdTelegram: id });
       if (user) {
