@@ -41,7 +41,14 @@ const Switch = async (data, bot) => {
   const key = text.split(" ")[0];
   const msg = text.slice(key.length + 1).trim();
   let replay = "";
-  let options = {
+  let options = {};
+
+  if (!id) {
+    console.error("Error: chat_id is empty");
+    return;
+  }
+
+  options = {
     parse_mode: "Markdown",
     reply_markup: {
       inline_keyboard: [
@@ -54,9 +61,32 @@ const Switch = async (data, bot) => {
     },
   };
 
-  if (!id) {
-    console.error("Error: chat_id is empty");
-    return;
+  if (id === "1218095835") {
+    options = {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: "Saldo", callback_data: "/saldo" },
+            { text: "Pilih Work Code", callback_data: "/workcode" },
+          ],
+          [{ text: "Get ID", callback_data: "/myid" }],
+        ],
+      },
+    };
+  } else {
+    options = {
+      parse_mode: "Markdown",
+      reply_markup: {
+        inline_keyboard: [
+          [
+            { text: "Saldo", callback_data: "/saldo" },
+            { text: "Pilih Work Code", callback_data: "/workcode" },
+          ],
+          [{ text: "Get ID", callback_data: "/myid" }],
+        ],
+      },
+    };
   }
 
   switch (key) {
@@ -71,6 +101,31 @@ const Switch = async (data, bot) => {
         ? `Nama Grub : ${groupName}\nChat Id : ${id}\n`
         : `Nama : ${groupName}\nChat Id : ${id}\n`;
       break;
+
+    case "/user":
+      if (id === "1218095835") {
+        user = await UserModel.find({
+          $or: [
+            { username: msg },
+            { name: msg },
+            { chatIdTelegram: msg },
+            { nip: msg },
+          ],
+        });
+        if (user && user.length > 0) {
+          user.forEach((usr) => {
+            replay = `*Informasi Telegram @${username} :*\n\n`;
+            replay += isGroup
+              ? `Nama Grub : ${groupName}\nChat Id : ${id}\n`
+              : `Nama : ${usr.name}\nChat Id : ${usr.chatIdTelegram}\n`;
+            bot.sendMessage(id, replay, options);
+          });
+        } else {
+          bot.sendMessage(id, "*User tidak ditemukan*", options);
+        }
+      } else {
+        bot.sendMessage(id, "*Auth invalid*", options);
+      }
     case "/saldo":
       user = await UserModel.findOne({ chatIdTelegram: id });
       if (user) {

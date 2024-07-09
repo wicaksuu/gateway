@@ -24,6 +24,10 @@ const telegramBotSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    validUntil: {
+      type: Date,
+      required: true,
+    },
   },
   { timestamps: true }
 );
