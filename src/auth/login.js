@@ -7,7 +7,7 @@ dotenv.config();
 
 module.exports = {
   name: "login",
-  description: "User login test",
+  description: "User login",
   params: ["username", "password"],
   paramTypes: {
     username: "string",
