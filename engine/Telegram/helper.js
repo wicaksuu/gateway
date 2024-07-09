@@ -301,7 +301,7 @@ const Switch = async (data, bot) => {
 
         userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
         if (userAutoAbsen) {
-          if (userAutoAbsen.validUntil < new Date()) {
+          if (userAutoAbsen.validUntil > new Date()) {
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
             apiKey = userAutoAbsen.apiKey;
@@ -378,7 +378,7 @@ const Switch = async (data, bot) => {
 
         userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
         if (userAutoAbsen) {
-          if (userAutoAbsen.validUntil < new Date()) {
+          if (userAutoAbsen.validUntil > new Date()) {
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
             apiKey = userAutoAbsen.apiKey;
