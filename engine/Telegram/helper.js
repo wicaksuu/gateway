@@ -78,7 +78,13 @@ const Switch = async (data, bot) => {
 
     case "/format":
       replay =
-        "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)\nURL : https://absen.madiunkab.go.id";
+        "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : ";
+
+      bot.sendMessage(id, replay, {
+        parse_mode: "Markdown",
+      });
+      replay =
+        "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)";
       break;
 
     case "/add":
@@ -93,9 +99,8 @@ const Switch = async (data, bot) => {
         const name = msgArray[6].split(" : ")[1];
         const imei = msgArray[7].split(":")[1];
         const userAgent = msgArray[8].split(" : ")[1];
-        const userUrl = msgArray[9].split(" : ")[1];
 
-        replay = `*NIP : ${nip}\n*Password : ${password}\n*URL : ${url}\n*Latitude : ${latitude}\n*Longitude : ${longitude}\n*Chat ID Telegram : ${chatIdTelegram}\n*Nama : ${name}\n*IMEI : ${imei}\n*User Agent : ${userAgent}\n*URL : ${userUrl}`;
+        replay = `*NIP : ${nip}\n*Password : ${password}\n*URL : ${url}\n*Latitude : ${latitude}\n*Longitude : ${longitude}\n*Chat ID Telegram : ${chatIdTelegram}\n*Nama : ${name}\n*IMEI : ${imei}\n*User Agent : ${userAgent}`;
       }
       break;
 
