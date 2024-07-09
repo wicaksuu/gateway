@@ -18,7 +18,7 @@ const Switch = async (data, bot) => {
     latitude,
     longitude,
     respWorkCode,
-    lastBalance,
+    validUntilDate,
     pesan,
     respLogin,
     userAutoAbsen,
@@ -109,7 +109,19 @@ const Switch = async (data, bot) => {
             replay += `URL: ${url}\n`;
             replay += `Latitude: ${latitude}\n`;
             replay += `Longitude: ${longitude}\n`;
-            replay += `Valid Until: ${userAutoAbsen.validUntil}\n\n`;
+            validUntilDate = new Date(userAutoAbsen.validUntil).toLocaleString(
+              "id-ID",
+              {
+                timeZone: "Asia/Jakarta",
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              }
+            );
+            replay += `Valid Until: ${validUntilDate}\n\n`;
             bot.sendMessage(id, replay, options);
           }
           replay = `*User telah ditampilkan*`;
@@ -194,11 +206,21 @@ const Switch = async (data, bot) => {
             }
           }
 
-          replay = `*Hai ${name}*\nNIP anda : ${nip}\nImei anda : ${
-            userAutoAbsen.imei
-          }\nUrl layanan : ${userAutoAbsen.url}\nToken : ${
-            userAutoAbsen.apiKey
-          }\nPesan : ${pesan}\nSisa saldo : ${formatRupiah(balance)}\n`;
+          validUntilDate = new Date(userAutoAbsen.validUntil).toLocaleString(
+            "id-ID",
+            {
+              timeZone: "Asia/Jakarta",
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+            }
+          );
+          replay += `Valid Until: ${validUntilDate}\n\n`;
+
+          replay = `*Hai ${name}*\nNIP anda : ${nip}\nImei anda : ${userAutoAbsen.imei}\nUrl layanan : ${userAutoAbsen.url}\nToken : ${userAutoAbsen.apiKey}\nPesan : ${pesan}\nAktif Sampai: ${validUntilDate}\n\n`;
         } else {
           replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
         }
@@ -317,7 +339,19 @@ const Switch = async (data, bot) => {
                   url
                 );
                 if (respPresensi.result) {
-                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${userAutoAbsen.validUntil}`;
+                  validUntilDate = new Date(
+                    userAutoAbsen.validUntil
+                  ).toLocaleString("id-ID", {
+                    timeZone: "Asia/Jakarta",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  });
+
+                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${validUntilDate}`;
                 } else {
                   replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
                 }
@@ -388,7 +422,18 @@ const Switch = async (data, bot) => {
                   url
                 );
                 if (respPresensi.result) {
-                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${userAutoAbsen.validUntil}`;
+                  validUntilDate = new Date(
+                    userAutoAbsen.validUntil
+                  ).toLocaleString("id-ID", {
+                    timeZone: "Asia/Jakarta",
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                  });
+                  replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${validUntilDate}`;
                 } else {
                   replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
                 }
