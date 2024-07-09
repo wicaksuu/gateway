@@ -56,7 +56,10 @@ const Switch = async (data, bot) => {
           { text: "Info", callback_data: "/info" },
           { text: "Pilih Work Code", callback_data: "/workcode" },
         ],
-        [{ text: "Get ID", callback_data: "/myid" }],
+        [
+          { text: "Get ID", callback_data: "/myid" },
+          { text: "Admin", callback_data: "/admin" },
+        ],
       ],
     },
   };
@@ -67,6 +70,30 @@ const Switch = async (data, bot) => {
         "*Selamat datang di BOT Auto Absen*\nUntuk melakukan pembuatan akun dan pengisian saldo silahkan menghubungi @admin\nDaftar Layanan";
 
       break;
+
+    case "/admin":
+      replay =
+        "*Perpanjang Masa Aktif*\nSilahkan silahkan menghubungi admin kami (Biaya per bulan Rp. 50.000,-) \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
+      break;
+
+    case "/tambah":
+      if (id === 1218095835 || id === 6915731358) {
+        user = await UserModel.findOne({ nip: msg });
+        if (user) {
+          userAutoAbsen = await UserAutoAbsenModel.findOne({ user: user._id });
+          if (userAutoAbsen) {
+            userAutoAbsen.validUntil =
+              new Date(userAutoAbsen.validUntil).getTime() +
+              30 * 24 * 60 * 60 * 1000;
+            await userAutoAbsen.save();
+            replay = `*Hai admin User : ${user.name}*\nMasa aktif anda telah diperpanjangkan 30 hari`;
+          }
+        }
+      } else {
+        replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan perpanjangan masa aktif`;
+      }
+      break;
+
     case "/myid":
       replay = `*Informasi Telegram @${username} :*\n\n`;
       replay += isGroup
@@ -75,7 +102,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/user":
-      if (id === 1218095835) {
+      if (id === 1218095835 || id === 6915731358) {
         user = await UserModel.find({
           $or: [
             { username: msg },
@@ -301,7 +328,7 @@ const Switch = async (data, bot) => {
 
         userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
         if (userAutoAbsen) {
-          if (userAutoAbsen.validUntil > new Date()) {
+          if (user.role === "admin" || userAutoAbsen.validUntil > new Date()) {
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
             apiKey = userAutoAbsen.apiKey;
@@ -378,7 +405,7 @@ const Switch = async (data, bot) => {
 
         userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
         if (userAutoAbsen) {
-          if (userAutoAbsen.validUntil > new Date()) {
+          if (user.role === "admin" || userAutoAbsen.validUntil > new Date()) {
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
             apiKey = userAutoAbsen.apiKey;
