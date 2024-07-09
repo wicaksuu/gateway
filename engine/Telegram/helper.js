@@ -93,14 +93,44 @@ const Switch = async (data, bot) => {
         const nip = msgArray[0].split(" : ")[1].replace(/\s+/g, "");
         const password = msgArray[1].split(" : ")[1];
         const url = msgArray[2].split(" : ")[1];
-        const latitude = parseFloat(msgArray[3].split(" : ")[1]);
-        const longitude = parseFloat(msgArray[4].split(" : ")[1]);
+        const latitude = msgArray[3].split(" : ")[1];
+        const longitude = msgArray[4].split(" : ")[1];
         const chatIdTelegram = msgArray[5].split(" : ")[1].replace(/\s+/g, "");
         const name = msgArray[6].split(" : ")[1];
-        const imei = msgArray[7].split(":")[1];
+        const imei = msgArray[7].split(" : ")[1];
         const userAgent = msgArray[8].split(" : ")[1];
 
-        replay = `*NIP : ${nip}\n*Password : ${password}\n*URL : ${url}\n*Latitude : ${latitude}\n*Longitude : ${longitude}\n*Chat ID Telegram : ${chatIdTelegram}\n*Nama : ${name}\n*IMEI : ${imei}\n*User Agent : ${userAgent}`;
+        try {
+          let user = await UserModel.findOne({ nip });
+          if (!user) {
+            user = new UserModel({
+              name: name,
+              username: nip,
+              password: await bcrypt.hash(password, 10),
+              role: "user",
+              permission: { read: true, write: false },
+              nip: nip,
+              chatIdTelegram,
+            });
+            await user.save();
+          }
+
+          const userAutoAbsen = new UserAutoAbsenModel({
+            user: user._id,
+            password: password,
+            imei: imei,
+            userAgent: userAgent,
+            latitude: latitude,
+            longitude: longitude,
+            url: url,
+            validUntil: new Date(new Date().setDate(new Date().getDate() + 30)),
+          });
+
+          await userAutoAbsen.save();
+          replay = "User berhasil di buat";
+        } catch (error) {
+          replay = "Gagal membuat user";
+        }
       }
       break;
 
