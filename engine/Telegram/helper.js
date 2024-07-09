@@ -299,13 +299,7 @@ const Switch = async (data, bot) => {
 
         userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
         if (userAutoAbsen) {
-          if (userAutoAbsen) {
-            if (user.role !== "admin") {
-              if (userAutoAbsen.validUntil < new Date()) {
-                replay = `*Hai ${name}*\nAkun anda sudah kadaluarsa, silahkan melakukan penambahan masa aktif!`;
-                return;
-              }
-            }
+          if (userAutoAbsen.validUntil < new Date()) {
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
             apiKey = userAutoAbsen.apiKey;
@@ -353,7 +347,7 @@ const Switch = async (data, bot) => {
 
                   replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${validUntilDate}`;
                 } else {
-                  replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
+                  replay = `*Hai ${name}*\nAkun anda sudah kadaluarsa, silahkan melakukan penambahan masa aktif!`;
                 }
               } else {
                 replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
@@ -382,13 +376,7 @@ const Switch = async (data, bot) => {
 
         userAutoAbsen = await UserAutoAbsenModel.findOne({ user: _id });
         if (userAutoAbsen) {
-          if (userAutoAbsen) {
-            if (user.role !== "admin") {
-              if (userAutoAbsen.validUntil < new Date()) {
-                replay = `*Hai ${name}*\nAkun anda sudah kadaluarsa, silahkan melakukan penambahan masa aktif!`;
-                return;
-              }
-            }
+          if (userAutoAbsen.validUntil < new Date()) {
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
             apiKey = userAutoAbsen.apiKey;
@@ -433,9 +421,10 @@ const Switch = async (data, bot) => {
                     minute: "2-digit",
                     second: "2-digit",
                   });
+
                   replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${validUntilDate}`;
                 } else {
-                  replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
+                  replay = `*Hai ${name}*\nAkun anda sudah kadaluarsa, silahkan melakukan penambahan masa aktif!`;
                 }
               } else {
                 replay = `*Hai ${name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
@@ -452,6 +441,7 @@ const Switch = async (data, bot) => {
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki account!`;
       }
+
       break;
     default:
       replay = "*Command tidak tersedia*";
