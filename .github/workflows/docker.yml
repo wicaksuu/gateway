@@ -39,9 +39,9 @@ jobs:
       - name: SSH to Server
         uses: appleboy/ssh-action@v0.1.2
         with:
-          host: 103.132.230.115
+          host: 103.142.210.151
           username: wicaksu
-          password: Jack03061997
+          password: Kominfogrez726*
           script: |
             if [ $(docker ps -q -f name=mongodb) ]; then
               echo "MongoDB is already running"

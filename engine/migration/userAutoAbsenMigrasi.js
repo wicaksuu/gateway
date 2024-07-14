@@ -29,16 +29,17 @@ async function migrateUsers() {
 
       const UserAutoAbsenModels = [
         {
-          chatIdTelegram: "6939373220",
-          name: "NUR EKOWAHYUDI, S.E.",
-          nip: "198201142014021002",
-          password: "198201142014021002",
-          imei: "8c7c8e731c868e84",
-          latitude: "-7.54350646208995",
-          longitude: "111.65470339160038",
+          chatIdTelegram: "7345336932",
+          name: "YULIANTI, S.Kep.Ns",
+          nip: "198407282009022011",
+          password: "198407282009022011",
+          imei: "5f0ce773d824982d",
+          latitude: "-7.54109542871823",
+          longitude: "111.65514714997698",
           userAgent:
-            "Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)",
+            "Dalvik/2.1.0 (Linux; U; Android 13; CPH2531 Build/SP1A.210812.016)",
           url: "https://absen.madiunkab.go.id",
+          validUntil: new Date(new Date().setDate(new Date().getDate() + 30)),
         },
       ];
 
@@ -56,9 +57,6 @@ async function migrateUsers() {
               permission: { read: true, write: false },
               nip: UserAutoAbsenModels[i].nip,
               chatIdTelegram: UserAutoAbsenModels[i].chatIdTelegram,
-              validUntil: new Date(
-                new Date().setDate(new Date().getDate() + 30)
-              ), // Menambahkan validUntil 30 hari dari tanggal migrasi
             });
             await user.save();
           }

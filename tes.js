@@ -1,116 +1,66 @@
-const {
-  Login,
-  getWorkCode,
-  Presensi,
-  CekPresensi,
-} = require("./engine/Telegram/autoAbsen");
+const express = require("express");
+const fetch = require("node-fetch");
+const bodyParser = require("body-parser");
+const NodeCache = require("node-cache");
 
-const AutoMasuk = async function AutoMasuk(
-  username,
-  password,
-  userAgent,
-  imei,
-  api_key,
-  url,
-  latitude,
-  longitude
-) {
-  let {
-    webhook,
-    login,
-    workCode,
-    ProsesPresensi,
-    VerifikasiPresensi,
-    PesanVerifikasi,
-    PesanProses,
-  } = {};
-  if (!api_key) {
-    login = await Login(
-      userAgent,
-      username,
-      password,
-      imei,
-      url,
-      latitude,
-      longitude
-    );
-    if (login.result) {
-      api_key = login.result.api_key;
-    } else {
-      console.log("Api key tidak ditemukan");
-      process.exit();
-    }
-  } else {
-    webhook = await getWorkCode(
-      userAgent,
-      api_key,
-      imei,
-      url,
-      latitude,
-      longitude
-    );
+const app = express();
+const PORT = process.env.PORT || 3000;
+const TELEGRAM_API = `https://api.telegram.org/bot${process.env.TELEGRAM_TOKEN}`;
+const cache = new NodeCache({ stdTTL: 600 }); // Cache dengan TTL 10 menit
 
-    if (webhook.result) {
-      workCode = webhook.result;
+app.use(bodyParser.json());
+
+app.post("/webhook", async (req, res) => {
+  const { message } = req.body;
+
+  if (message && message.text) {
+    const chatId = message.chat.id;
+    const text = message.text;
+
+    // Ambil status percakapan dari cache
+    let conversationState = cache.get(chatId) || {};
+
+    // Logika percakapan
+    if (!conversationState.step) {
+      await sendMessage(chatId, "Halo! Apa nama Anda?");
+      conversationState.step = "ASK_NAME";
+    } else if (conversationState.step === "ASK_NAME") {
+      conversationState.name = text;
+      await sendMessage(
+        chatId,
+        `Senang bertemu dengan Anda, ${text}! Berapa umur Anda?`
+      );
+      conversationState.step = "ASK_AGE";
+    } else if (conversationState.step === "ASK_AGE") {
+      conversationState.age = text;
+      await sendMessage(
+        chatId,
+        `Terima kasih, ${conversationState.name}. Anda berumur ${text} tahun.`
+      );
+      conversationState.step = "DONE";
     } else {
-      console.log("Work code tidak ditemukan");
-      process.exit();
+      await sendMessage(chatId, "Percakapan selesai. Terima kasih!");
+      cache.del(chatId); // Hapus status percakapan dari cache
     }
 
-    ProsesPresensi = await CekPresensi(
-      api_key,
-      1,
-      "25277",
-      latitude,
-      longitude,
-      imei,
-      userAgent,
-      url
-    );
-    if (ProsesPresensi.result) {
-      PesanVerifikasi = ProsesPresensi.result.message;
-      console.log(PesanVerifikasi);
-    } else {
-      console.log("Gagal melakukan cek presensi");
-      process.exit();
-    }
-    VerifikasiPresensi = await Presensi(
-      api_key,
-      1,
-      "25277",
-      latitude,
-      longitude,
-      imei,
-      userAgent,
-      url
-    );
-    if (VerifikasiPresensi.result) {
-      PesanProses = VerifikasiPresensi.result.message;
-      console.log(PesanProses);
-    } else {
-      console.log("Gagal melakukan presensi");
-      process.exit();
-    }
+    // Simpan status percakapan ke cache
+    cache.set(chatId, conversationState);
   }
-};
 
-const userAgent =
-  "Dalvik/2.1.0 (Linux; U; Android 13; SM-G985F Build/TP1A.220624.014)";
-const username = "wicaksu";
-const password = "Jack03061997";
-const api_key = "101395664666857970408805.84469463.20240703111648";
-const imei = "3be18a532c24ade2";
-const url = "https://absen.madiunkab.go.id";
-const latitude = "-7.63250691";
-const longitude = "111.53012497";
+  res.sendStatus(200);
+});
 
-const resp = AutoMasuk(
-  username,
-  password,
-  userAgent,
-  imei,
-  api_key,
-  url,
-  latitude,
-  longitude
-);
+async function sendMessage(chatId, text) {
+  const url = `${TELEGRAM_API}/sendMessage`;
+  const response = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, text: text }),
+  });
+
+  return response.json();
+}
+
+app.listen(PORT, () => {
+  console.log(`Server berjalan di port ${PORT}`);
+});
