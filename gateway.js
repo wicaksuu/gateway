@@ -12,7 +12,7 @@ const apiRoutes = require("./engine/routers/router");
 connectDB();
 
 const corsOptions = {
-  origin: "https://wicak.id", // ganti dengan domain aplikasi Astro.js Anda
+  origin: ["https://wicak.id", "https://example.com", "http://localhost:4321"],
   methods: "GET, POST, PUT, DELETE, OPTIONS",
   allowedHeaders: "Content-Type, Authorization",
 };
