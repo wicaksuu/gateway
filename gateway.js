@@ -34,5 +34,5 @@ app.use(headerControl);
 
 app.use("/", apiRoutes);
 app.listen(PORT, () => {
-  console.log(`Server berjalan di port ${PORT}`);
+  console.log(`http://127.0.0.1:${PORT}`);
 });
