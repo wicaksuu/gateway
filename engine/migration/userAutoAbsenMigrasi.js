@@ -29,15 +29,14 @@ async function migrateUsers() {
 
       const UserAutoAbsenModels = [
         {
-          chatIdTelegram: "1675914079",
-          name: "CHRISTYAN JUNITARI, S.TP",
-          nip: "198906272014022006",
-          password: "198906272014022006",
-          imei: "fac65aa4185a5192",
-          latitude: "-7.55297785746177",
-          longitude: "111.6045552631806",
-          userAgent:
-            "Dalvik/2.1.0 (Linux; U; Android 11; RMX3201 Build/RP1A.200720.011)",
+          chatIdTelegram: "6609241392",
+          name: "GUSTI ALIFFIAN PUTRA RAMADHAN, A.Md.Kep",
+          nip: "199601262024211011",
+          password: "199601262024211011",
+          imei: "D7B44EF9-CA4D-474E-9DF1-0EAACDEB2127",
+          latitude: "-7.7437404355231685",
+          longitude: "111.53006751265202",
+          userAgent: "BAKTI%20Absensi/2 CFNetwork/1494.0.7 Darwin/23.4.0",
           url: "https://absen.madiunkab.go.id",
           validUntil: new Date(new Date().setDate(new Date().getDate() + 30)),
         },
