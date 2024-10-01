@@ -1,4 +1,5 @@
 const UserModel = require("../models/userModel");
+const bcrypt = require("bcrypt");
 const UserAutoAbsenModel = require("../models/userAutoAbsenModel");
 const {
   Login,
