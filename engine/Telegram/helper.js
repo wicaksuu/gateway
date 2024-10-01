@@ -372,28 +372,24 @@ const Switch = async (data, bot) => {
               longitude
             );
             if (respWorkCode.result) {
-              var nameSimple = workCode.nama;
               options.reply_markup = {
-                inline_keyboard: respWorkCode.result.map((workCode) => [
-                  {
-                    text:
-                      "CekIn " +
-                      nameSimple
-                        .replace("(GLOBAL)", "G")
-                        .replace("HARI", "")
-                        .replace("SEKOLAH", "SKLH"),
-                    callback_data: `/cekin ${workCode.id}`,
-                  },
-                  {
-                    text:
-                      "CekOut " +
-                      nameSimple
-                        .replace("(GLOBAL)", "G")
-                        .replace("HARI", "")
-                        .replace("SEKOLAH", "SKLH"),
-                    callback_data: `/cekout ${workCode.id}`,
-                  },
-                ]),
+                inline_keyboard: respWorkCode.result.map((workCode) => {
+                  var nameSimple = workCode.nama
+                    .replace(/\(GLOBAL\)/gi, "G") // Gantikan "(GLOBAL)" dengan "G", abaikan case
+                    .replace(/\bHARI\b/gi, "") // Gantikan kata "HARI" dengan string kosong
+                    .replace(/\bSEKOLAH\b/gi, "SKLH"); // Gantikan kata "SEKOLAH" dengan "SKLH"
+
+                  return [
+                    {
+                      text: "CekIn " + nameSimple,
+                      callback_data: `/cekin ${workCode.id}`,
+                    },
+                    {
+                      text: "CekOut " + nameSimple,
+                      callback_data: `/cekout ${workCode.id}`,
+                    },
+                  ];
+                }),
               };
               replay =
                 "Silahkan pilih presensi sesuai dengan yang anda inginkan\nAnda akan melakukan presensi pada hari *" +
