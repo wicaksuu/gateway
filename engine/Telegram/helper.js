@@ -122,7 +122,7 @@ const Switch = async (data, bot) => {
           item_details: [
             {
               id: "sub-1",
-              price: 50000,
+              price: 55000,
               quantity: 1,
               name: "Subscribe 1",
             },
@@ -134,7 +134,9 @@ const Switch = async (data, bot) => {
             transaction;
           replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
         } catch (e) {
-          replay = `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin. Error: ${e}`;
+          const pesanMimin = `*Payment Creating Error*\n\n ${e}\n\nUser : ${user.name}`;
+          bot.sendMessage(id, pesanMimin);
+          replay = `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin.`;
         }
       } else {
         replay = "Anda belum terdaftar di layanan manapun !!!";
