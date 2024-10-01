@@ -9,6 +9,7 @@ const {
   CekPresensi,
   Presensi,
   formatRupiah,
+  generateRandomString,
 } = require("./autoAbsen");
 
 let snap = new midtransClient.Snap({
@@ -640,17 +641,6 @@ const Switch = async (data, bot) => {
 
   bot.sendMessage(id, replay, options);
   return;
-};
-
-const generateRandomString = (length) => {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let result = "";
-  const charactersLength = characters.length;
-  for (let i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * charactersLength));
-  }
-  return result;
 };
 
 module.exports = { Switch };
