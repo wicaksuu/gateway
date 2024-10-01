@@ -9,456 +9,34 @@ const {
   CekPresensi,
   Presensi,
   formatRupiah,
-  generateRandomString,
 } = require("./autoAbsen");
 
-const snap = new midtransClient.Snap({
+let snap = new midtransClient.Snap({
   isProduction: false,
   serverKey: "SB-Mid-server-tmYg6t7fcEzakh36ch91Weqn",
 });
 
-const createInlineKeyboardButton = (text, callback_data) => ({
-  text,
-  callback_data,
-});
-
-const getUserInfo = async (id) => {
-  const user = await UserModel.findOne({ chatIdTelegram: id });
-  if (!user) return null;
-
-  const userAutoAbsen = await UserAutoAbsenModel.findOne({ user: user._id });
-  return { user, userAutoAbsen };
-};
-
-const handleStartCommand = () => {
-  return "*Selamat datang di BOT Auto Absen*\nUntuk melakukan pembuatan akun dan pengisian saldo silahkan menghubungi\n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nBiaya layanan sebesar Rp. 50.000,- per bulan \n";
-};
-
-const handleAdminCommand = () => {
-  return "*Jika kesusahan melakukan perpanjangan silahkan hubungi admin kami, agar bisa di bantu \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
-};
-
-const handleFormatCommand = (id, name) => {
-  if (id === 1218095835 || id === 6915731358) {
-    return {
-      replay:
-        "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : ",
-      options: {
-        parse_mode: "Markdown",
-      },
-    };
-  } else {
-    return {
-      replay: `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`,
-    };
-  }
-};
-
-const handlePerpanjangCommand = async (id) => {
-  const user = await UserModel.findOne({ chatIdTelegram: id });
-  if (!user) return "Anda belum terdaftar di layanan manapun !!!";
-
-  const uniqueCode = generateRandomString(10);
-  const parameter = {
-    transaction_details: {
-      order_id: `order-id-${user.nip}-${uniqueCode}`,
-      gross_amount: 55000,
-    },
-    customer_details: {
-      first_name: user.name,
-      phone: user.whatsapp,
-    },
-    item_details: [
-      {
-        id: "sub-1",
-        price: 50000,
-        quantity: 1,
-        name: "Subscribe 1",
-      },
-    ],
-    expiry: {
-      start_time: new Date().toISOString(),
-      unit: "hour",
-      duration: 1,
-    },
-  };
-
-  try {
-    const transaction = await snap.createTransaction(parameter);
-    const { token: transactionToken, redirect_url: redirectUrl } = transaction;
-    return `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
-  } catch (e) {
-    return `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin`;
-  }
-};
-
-const handleAddCommand = async (id, msg, name) => {
-  if (id !== 1218095835 && id !== 6915731358) {
-    return `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
-  }
-
-  const msgArray = msg.split("\n");
-  const nip = msgArray[0].split(" : ")[1].replace(/\s+/g, "");
-  const password = msgArray[1].split(" : ")[1];
-  const url = msgArray[2].split(" : ")[1];
-  const latitude = msgArray[3].split(" : ")[1];
-  const longitude = msgArray[4].split(" : ")[1];
-  const chatIdTelegram = msgArray[5].split(" : ")[1].replace(/\s+/g, "");
-  const name = msgArray[6].split(" : ")[1];
-  const imei = msgArray[7].split(" : ")[1];
-  const userAgent = msgArray[8].split(" : ")[1];
-
-  try {
-    let user = await UserModel.findOne({ nip });
-    if (!user) {
-      user = new UserModel({
-        name: name,
-        username: nip,
-        password: await bcrypt.hash(password, 10),
-        role: "user",
-        permission: { read: true, write: false },
-        nip: nip,
-        chatIdTelegram,
-      });
-      await user.save();
-    } else {
-      user.name = name;
-      user.username = nip;
-      user.password = await bcrypt.hash(password, 10);
-      user.chatIdTelegram = chatIdTelegram;
-      await user.save();
-    }
-
-    let userAutoAbsen = await UserAutoAbsenModel.findOne({ user: user._id });
-    if (!userAutoAbsen) {
-      userAutoAbsen = new UserAutoAbsenModel({
-        user: user._id,
-        password: password,
-        imei: imei,
-        userAgent: userAgent,
-        latitude: latitude,
-        longitude: longitude,
-        url: url,
-        validUntil: new Date(),
-      });
-    } else {
-      userAutoAbsen.password = password;
-      userAutoAbsen.imei = imei;
-      userAutoAbsen.userAgent = userAgent;
-      userAutoAbsen.latitude = latitude;
-      userAutoAbsen.longitude = longitude;
-      userAutoAbsen.url = url;
-    }
-
-    await userAutoAbsen.save();
-    return "User berhasil di buat atau diperbarui";
-  } catch (error) {
-    return `Gagal membuat atau memperbarui user: ${error.message}`;
-  }
-};
-
-const handleTambahCommand = async (id, msg, name) => {
-  if (id !== 1218095835 && id !== 6915731358) {
-    return `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan perpanjangan masa aktif`;
-  }
-
-  const user = await UserModel.findOne({ nip: msg });
-  if (user) {
-    const userAutoAbsen = await UserAutoAbsenModel.findOne({ user: user._id });
-    if (userAutoAbsen) {
-      userAutoAbsen.validUntil =
-        new Date(userAutoAbsen.validUntil).getTime() + 30 * 24 * 60 * 60 * 1000;
-      await userAutoAbsen.save();
-      return `*Hai admin User : ${user.name}*\nMasa aktif anda telah diperpanjangkan 30 hari`;
-    }
-  }
-};
-
-const handleMyIdCommand = (username, isGroup, groupName, id) => {
-  let replay = `*Informasi Telegram @${username} :*\n\n`;
-  replay += isGroup
-    ? `Nama Grub : ${groupName}\nChat Id : ${id}\n`
-    : `Nama : ${groupName}\nChat Id : ${id}\n`;
-  return replay;
-};
-
-const handleUserCommand = async (id, msg, name, options) => {
-  if (id !== 1218095835 && id !== 6915731358) {
-    return `*Auth invalid*`;
-  }
-
-  const users = await UserModel.find({
-    $or: [
-      { username: msg },
-      { name: msg },
-      { chatIdTelegram: msg },
-      { nip: msg },
-    ],
-  });
-
-  if (!users || users.length === 0) {
-    return `*User tidak ditemukan*`;
-  }
-
-  for (const user of users) {
-    const userAutoAbsen = await UserAutoAbsenModel.findOne({ user: user._id });
-    const validUntilDate = new Date(userAutoAbsen.validUntil).toLocaleString(
-      "id-ID",
-      {
-        timeZone: "Asia/Jakarta",
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-      }
-    );
-
-    let replay = `*Informasi User :*\n\n`;
-    replay += `Nama: ${user.name}\n`;
-    replay += `Saldo: ${formatRupiah(user.balance)}\n`;
-    replay += `NIP: ${user.nip}\n`;
-    replay += `API Key: ${userAutoAbsen.apiKey}\n`;
-    replay += `User Agent: ${userAutoAbsen.userAgent}\n`;
-    replay += `IMEI: ${userAutoAbsen.imei}\n`;
-    replay += `URL: ${userAutoAbsen.url}\n`;
-    replay += `Latitude: ${userAutoAbsen.latitude}\n`;
-    replay += `Longitude: ${userAutoAbsen.longitude}\n`;
-    replay += `Valid Until: ${validUntilDate}\n\n`;
-
-    bot.sendMessage(id, replay, options);
-  }
-
-  return `*User telah ditampilkan*`;
-};
-
-const handleInfoCommand = async (id, options) => {
-  const { user, userAutoAbsen } = await getUserInfo(id);
-  if (!user) {
-    return "*Akun anda belum terdaftar*\n\nApabila anda tertarik dengan layanan ini silahkan menghubungi \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nTerimakasih";
-  }
-
-  if (!userAutoAbsen) {
-    if (user.role === "admin") {
-      return `*Hai ${user.name}*\nUserName : ${
-        user.username
-      }\nSaldo : ${formatRupiah(user.balance)}`;
-    } else {
-      return `*Hai ${user.name}*\nAnda belum terdaftar pada layanan apapun!`;
-    }
-  }
-
-  const { apiKey, userAgent, imei, url, latitude, longitude } = userAutoAbsen;
-  let pesan = "";
-
-  if (apiKey) {
-    const respWorkCode = await getWorkCode(
-      userAgent,
-      apiKey,
-      imei,
-      url,
-      latitude,
-      longitude
-    );
-    if (respWorkCode.result) {
-      pesan = "Status akun sudah terlogin";
-    } else {
-      bot.sendMessage(
-        id,
-        "Melakukan login ulang karena token sudah tidak berlaku",
-        options
-      );
-      const respLogin = await Login(
-        userAgent,
-        user.nip,
-        userAutoAbsen.password,
-        imei,
-        url,
-        latitude,
-        longitude
-      );
-
-      if (respLogin.result) {
-        userAutoAbsen.apiKey = respLogin.result.api_key;
-        await userAutoAbsen.save();
-        pesan = "Sukses melakukan login ulang";
-      } else {
-        pesan = "Gagal melakukan login ulang";
-      }
-    }
-  } else {
-    const respLogin = await Login(
-      userAgent,
-      user.nip,
-      userAutoAbsen.password,
-      imei,
-      url,
-      latitude,
-      longitude
-    );
-
-    if (respLogin.result) {
-      userAutoAbsen.apiKey = respLogin.result.api_key;
-      await userAutoAbsen.save();
-      pesan = "Sukses melakukan login";
-    } else {
-      pesan = "Gagal melakukan login";
-    }
-  }
-
-  const validUntilDate = new Date(userAutoAbsen.validUntil).toLocaleString(
-    "id-ID",
-    {
-      timeZone: "Asia/Jakarta",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }
-  );
-  const currentDate = new Date();
-  const validUntil = new Date(userAutoAbsen.validUntil);
-  const activeStatus =
-    user.role === "admin"
-      ? "Unlimited"
-      : validUntil > currentDate
-      ? validUntilDate
-      : "Layanan Tidak Aktif";
-
-  return `*Hai ${user.name}*\nNIP anda : ${user.nip}\nImei anda : ${
-    userAutoAbsen.imei
-  }\nUrl layanan : ${userAutoAbsen.url}\nToken : ${
-    userAutoAbsen.apiKey
-  }\nPesan : ${pesan}\nAktif Sampai: ${activeStatus}\nSaldo : ${formatRupiah(
-    user.balance
-  )}\n\n`;
-};
-
-const handleWorkCodeCommand = async (id, options) => {
-  const { user, userAutoAbsen } = await getUserInfo(id);
-  if (!user) {
-    return `*Hai ${user.name}*\nAnda belum terdaftar pada layanan apapun!`;
-  }
-
-  if (!userAutoAbsen) {
-    return `*Hai ${user.name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
-  }
-
-  const { apiKey, userAgent, imei, url, latitude, longitude } = userAutoAbsen;
-
-  if (!apiKey) {
-    return `*Hai ${user.name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
-  }
-
-  const respWorkCode = await getWorkCode(
-    userAgent,
+const Switch = async (data, bot) => {
+  let {
+    user,
     apiKey,
+    userAgent,
     imei,
     url,
     latitude,
-    longitude
-  );
-
-  if (!respWorkCode.result) {
-    return `*Hai ${user.name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
-  }
-
-  options.reply_markup = {
-    inline_keyboard: respWorkCode.result.map((workCode) => {
-      const nameSimple = workCode.nama
-        .replace(/\(GLOBAL\)/gi, "G")
-        .replace(/\bHARI\b/gi, "")
-        .replace(/\bNON\b/gi, "N")
-        .replace(/\bSEKOLAH\b/gi, "SKH");
-
-      return [
-        {
-          text: "Msk " + nameSimple,
-          callback_data: `/cekin ${workCode.id}`,
-        },
-        {
-          text: "Plg " + nameSimple,
-          callback_data: `/cekout ${workCode.id}`,
-        },
-      ];
-    }),
-  };
-
-  return `Silahkan pilih presensi sesuai dengan yang anda inginkan\nAnda akan melakukan presensi pada hari *${respWorkCode.result[0].hari.nama}*`;
-};
-
-const handleCekInOutCommand = async (id, msg, type, options) => {
-  const { user, userAutoAbsen } = await getUserInfo(id);
-  if (!user) {
-    return `*Hai ${user.name}*\nAnda tidak memiliki account!`;
-  }
-
-  if (!userAutoAbsen) {
-    return `*Hai ${user.name}*\nAnda belum terdaftar pada layanan apapun!`;
-  }
-
-  if (user.role !== "admin" && userAutoAbsen.validUntil <= new Date()) {
-    return `*Hai ${user.name}*\nMasa aktif layanan telah habis, mohon melakukan perpanjangan masa aktif!`;
-  }
-
-  const { apiKey, userAgent, imei, url, latitude, longitude } = userAutoAbsen;
-
-  if (!apiKey) {
-    return `*Hai ${user.name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
-  }
-
-  const respCekPresensi = await CekPresensi(
-    apiKey,
-    type,
-    msg,
-    latitude,
     longitude,
-    imei,
-    userAgent,
-    url
-  );
-
-  if (!respCekPresensi.result) {
-    return `*Hai ${user.name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
-  }
-
-  bot.sendMessage(id, respCekPresensi.result.message, options);
-
-  const respPresensi = await Presensi(
-    apiKey,
-    type,
-    msg,
-    latitude,
-    longitude,
-    imei,
-    userAgent,
-    url
-  );
-
-  if (!respPresensi.result) {
-    return `*Hai ${user.name}*\nSilahkan pilih button *Info* akun anda munkin belum terlogin!`;
-  }
-
-  const validUntilDate = new Date(userAutoAbsen.validUntil).toLocaleString(
-    "id-ID",
-    {
-      timeZone: "Asia/Jakarta",
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }
-  );
-
-  return `*Hai ${user.name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${validUntilDate}`;
-};
-
-const Switch = async (data, bot) => {
+    respWorkCode,
+    validUntilDate,
+    pesan,
+    respLogin,
+    userAutoAbsen,
+    name,
+    balance,
+    _id,
+    nip,
+    respCekPresensi,
+    respPresensi,
+  } = "";
   const { message, callback_query } = data;
   const botData = message || callback_query.message;
   const { first_name, last_name, username, id, type } = botData.chat;
@@ -467,11 +45,23 @@ const Switch = async (data, bot) => {
     ? message?.chat.title
     : `${first_name} ${last_name}`;
 
-  const text = callback_query?.data || botData.text || "";
+  let text = callback_query?.data || botData.text || "";
   const key = text.split(" ")[0];
   const msg = text.slice(key.length + 1).trim();
   let replay = "";
-  let options = {
+  let options = {};
+
+  if (!id) {
+    console.error("Error: chat_id is empty");
+    return;
+  }
+
+  const createInlineKeyboardButton = (text, callback_data) => ({
+    text,
+    callback_data,
+  });
+
+  options = {
     parse_mode: "Markdown",
     reply_markup: {
       inline_keyboard: [
@@ -488,27 +78,19 @@ const Switch = async (data, bot) => {
     },
   };
 
-  if (!id) {
-    console.error("Error: chat_id is empty");
-    return;
-  }
-
   switch (key) {
     case "/start":
-      replay = handleStartCommand();
+      replay =
+        "*Selamat datang di BOT Auto Absen*\nUntuk melakukan pembuatan akun dan pengisian saldo silahkan menghubungi\n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nBiaya layanan sebesar Rp. 50.000,- per bulan \n";
+
       break;
+
     case "/admin":
-      replay = handleAdminCommand();
+      replay =
+        "*Jika kesusahan melakukan perpanjangan silahkan hubungi admin kami, agar bisa di bantu \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
       break;
+
     case "/format":
-      const formatResult = handleFormatCommand(id, name);
-      replay = formatResult.replay;
-      options = formatResult.options || options;
-      break;
-    case "/perpanjang":
-      replay = await handlePerpanjangCommand(id);
-      break;
-    case "/add":
       if (id === 1218095835 || id === 6915731358) {
         replay =
           "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : ";
@@ -1058,6 +640,17 @@ const Switch = async (data, bot) => {
 
   bot.sendMessage(id, replay, options);
   return;
+};
+
+const generateRandomString = (length) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 };
 
 module.exports = { Switch };
