@@ -333,10 +333,26 @@ const Switch = async (data, bot) => {
           const currentDate = new Date();
           const validUntil = new Date(userAutoAbsen.validUntil);
           const activeStatus =
-            validUntil > currentDate ? validUntilDate : "Layanan Tidak Aktif";
-          replay = `*Hai ${name}*\nNIP anda : ${nip}\nImei anda : ${userAutoAbsen.imei}\nUrl layanan : ${userAutoAbsen.url}\nToken : ${userAutoAbsen.apiKey}\nPesan : ${pesan}\nAktif Sampai: ${activeStatus}\n\n`;
+            user.role === "admin"
+              ? "Unlimited"
+              : validUntil > currentDate
+              ? validUntilDate
+              : "Layanan Tidak Aktif";
+          replay = `*Hai ${name}*\nNIP anda : ${nip}\nImei anda : ${
+            userAutoAbsen.imei
+          }\nUrl layanan : ${userAutoAbsen.url}\nToken : ${
+            userAutoAbsen.apiKey
+          }\nPesan : ${pesan}\nAktif Sampai: ${activeStatus}\nSaldo : ${formatRupiah(
+            user.balance
+          )}\n\n`;
         } else {
-          replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
+          if (id === 1218095835 || id === 6915731358) {
+            replay = `*Hai ${name}*\nUserName : ${
+              user.username
+            }\nSaldo : ${formatRupiah(user.balance)}`;
+          } else {
+            replay = `*Hai ${name}*\nAnda belum terdaftar pada layanan apapun!`;
+          }
         }
       } else {
         replay =
