@@ -2,6 +2,7 @@ const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const UserAutoAbsenModel = require("../models/userAutoAbsenModel");
 const midtransClient = require("midtrans-client");
+const { createPaymentLink, withdrawMember } = require("./ipaymu");
 
 const {
   Login,
@@ -109,30 +110,18 @@ const Switch = async (data, bot) => {
     case "/perpanjang":
       user = await UserModel.findOne({ chatIdTelegram: id });
       if (user) {
-        const uniqueCode = generateRandomString(10);
-        const parameter = {
-          transaction_details: {
-            order_id: `order-id-${user.nip}-${uniqueCode}`,
-            gross_amount: 55000,
-          },
-          customer_details: {
-            first_name: user.name,
-            phone: user.whatsapp,
-          },
-          item_details: [
-            {
-              id: "sub-1",
-              price: 55000,
-              quantity: 1,
-              name: "Subscribe 1",
-            },
-          ],
-        };
+        const paymentLink = await createPaymentLink(
+          55000,
+          user.whatsapp,
+          user.name
+        );
         try {
-          const transaction = await snap.createTransaction(parameter);
-          const { token: transactionToken, redirect_url: redirectUrl } =
-            transaction;
-          replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
+          const paymentLink = await createPaymentLink(
+            55000,
+            user.whatsapp,
+            user.name
+          );
+          replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${paymentLink}`;
         } catch (e) {
           const pesanMimin = `*Payment Creating Error*\n\n ${e}\n\nUser : ${user.name}`;
           bot.sendMessage(id, pesanMimin);
