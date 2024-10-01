@@ -110,11 +110,6 @@ const Switch = async (data, bot) => {
     case "/perpanjang":
       user = await UserModel.findOne({ chatIdTelegram: id });
       if (user) {
-        const paymentLink = await createPaymentLink(
-          55000,
-          user.whatsapp,
-          user.name
-        );
         try {
           const paymentLink = await createPaymentLink(
             55000,
