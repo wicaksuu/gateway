@@ -377,7 +377,8 @@ const Switch = async (data, bot) => {
                   var nameSimple = workCode.nama
                     .replace(/\(GLOBAL\)/gi, "G") // Gantikan "(GLOBAL)" dengan "G", abaikan case
                     .replace(/\bHARI\b/gi, "") // Gantikan kata "HARI" dengan string kosong
-                    .replace(/\bSEKOLAH\b/gi, "SKLH"); // Gantikan kata "SEKOLAH" dengan "SKLH"
+                    .replace(/\bNON\b/gi, "N") // Gantikan kata "HARI" dengan string kosong
+                    .replace(/\bSEKOLAH\b/gi, "SKH"); // Gantikan kata "SEKOLAH" dengan "SKLH"
 
                   return [
                     {
