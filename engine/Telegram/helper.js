@@ -133,7 +133,7 @@ const Switch = async (data, bot) => {
           await userAutoAbsen.save();
           replay = "User berhasil di buat";
         } catch (error) {
-          replay = "Gagal membuat user";
+          replay = `Gagal membuat user: ${error.message}`;
         }
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
