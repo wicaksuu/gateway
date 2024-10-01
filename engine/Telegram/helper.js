@@ -381,11 +381,11 @@ const Switch = async (data, bot) => {
 
                   return [
                     {
-                      text: "CekIn " + nameSimple,
+                      text: "Msk " + nameSimple,
                       callback_data: `/cekin ${workCode.id}`,
                     },
                     {
-                      text: "CekOut " + nameSimple,
+                      text: "Plg " + nameSimple,
                       callback_data: `/cekout ${workCode.id}`,
                     },
                   ];
