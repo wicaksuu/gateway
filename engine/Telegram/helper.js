@@ -88,7 +88,7 @@ const Switch = async (data, bot) => {
 
     case "/admin":
       replay =
-        "*Jika kesusahan melakukan perpanjangan silahkan hubungi admin kami, agar bisa di bantu \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
+        "*Informasi*\nJika kesusahan melakukan perpanjangan silahkan hubungi admin kami, agar bisa di bantu \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
       break;
 
     case "/format":
@@ -134,7 +134,7 @@ const Switch = async (data, bot) => {
             transaction;
           replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
         } catch (e) {
-          replay = `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin`;
+          replay = `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin. Error: ${e}`;
         }
       } else {
         replay = "Anda belum terdaftar di layanan manapun !!!";
