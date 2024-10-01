@@ -133,7 +133,7 @@ const Switch = async (data, bot) => {
             transaction;
           replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
         } catch (e) {
-          replay = `Gagal membuat link pembayaran`;
+          replay = `Permintaan pembayaran gagal ${e.message}`;
         }
       } else {
         replay = "Anda belum terdaftar di layanan manapun !!!";
@@ -186,9 +186,7 @@ const Switch = async (data, bot) => {
               latitude: latitude,
               longitude: longitude,
               url: url,
-              validUntil: new Date(
-                new Date().setDate(new Date().getDate() + 30)
-              ),
+              validUntil: new Date(),
             });
           } else {
             userAutoAbsen.password = password;
