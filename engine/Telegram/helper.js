@@ -134,10 +134,10 @@ const Switch = async (data, bot) => {
           .then((transaction) => {
             let transactionToken = transaction.token;
             let redirectUrl = transaction.redirect_url;
-            replay += `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
+            replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
           })
           .catch((e) => {
-            replay += `Gagal membuta link pembayaran`;
+            replay = `Gagal membuta link pembayaran`;
           });
       } else {
         replay = "Anda belum terdaftar di layanan manapun !!!";
