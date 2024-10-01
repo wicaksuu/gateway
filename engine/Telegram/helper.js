@@ -104,15 +104,13 @@ const Switch = async (data, bot) => {
       user = await UserModel.findOne({ chatIdTelegram: id });
       if (user) {
         const uniqueCode = generateRandomString(10);
-        let parameter = {
+        const parameter = {
           transaction_details: {
             order_id: `order-id-${user.nip}-${uniqueCode}`,
             gross_amount: 55000,
           },
           customer_details: {
             first_name: user.name,
-            last_name: "",
-            email: "",
             phone: user.whatsapp,
           },
           item_details: [
@@ -129,16 +127,14 @@ const Switch = async (data, bot) => {
             duration: 1,
           },
         };
-        snap
-          .createTransaction(parameter)
-          .then((transaction) => {
-            let transactionToken = transaction.token;
-            let redirectUrl = transaction.redirect_url;
-            replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
-          })
-          .catch((e) => {
-            replay = `Gagal membuta link pembayaran`;
-          });
+        try {
+          const transaction = await snap.createTransaction(parameter);
+          const { token: transactionToken, redirect_url: redirectUrl } =
+            transaction;
+          replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
+        } catch (e) {
+          replay = `Gagal membuat link pembayaran`;
+        }
       } else {
         replay = "Anda belum terdaftar di layanan manapun !!!";
       }
