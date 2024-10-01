@@ -118,23 +118,43 @@ const Switch = async (data, bot) => {
               chatIdTelegram,
             });
             await user.save();
+          } else {
+            user.name = name;
+            user.username = nip;
+            user.password = await bcrypt.hash(password, 10);
+            user.chatIdTelegram = chatIdTelegram;
+            await user.save();
           }
 
-          const userAutoAbsen = new UserAutoAbsenModel({
+          let userAutoAbsen = await UserAutoAbsenModel.findOne({
             user: user._id,
-            password: password,
-            imei: imei,
-            userAgent: userAgent,
-            latitude: latitude,
-            longitude: longitude,
-            url: url,
-            validUntil: new Date(new Date().setDate(new Date().getDate() + 30)),
           });
+          if (!userAutoAbsen) {
+            userAutoAbsen = new UserAutoAbsenModel({
+              user: user._id,
+              password: password,
+              imei: imei,
+              userAgent: userAgent,
+              latitude: latitude,
+              longitude: longitude,
+              url: url,
+              validUntil: new Date(
+                new Date().setDate(new Date().getDate() + 30)
+              ),
+            });
+          } else {
+            userAutoAbsen.password = password;
+            userAutoAbsen.imei = imei;
+            userAutoAbsen.userAgent = userAgent;
+            userAutoAbsen.latitude = latitude;
+            userAutoAbsen.longitude = longitude;
+            userAutoAbsen.url = url;
+          }
 
           await userAutoAbsen.save();
-          replay = "User berhasil di buat";
+          replay = "User berhasil di buat atau diperbarui";
         } catch (error) {
-          replay = `Gagal membuat user: ${error.message}`;
+          replay = `Gagal membuat atau memperbarui user: ${error.message}`;
         }
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
@@ -352,14 +372,25 @@ const Switch = async (data, bot) => {
               longitude
             );
             if (respWorkCode.result) {
+              var nameSimple = workCode.nama;
               options.reply_markup = {
                 inline_keyboard: respWorkCode.result.map((workCode) => [
                   {
-                    text: "CekIn " + workCode.nama,
+                    text:
+                      "CekIn " +
+                      nameSimple
+                        .replace("(GLOBAL)", "G")
+                        .replace("HARI", "")
+                        .replace("SEKOLAH", "SKLH"),
                     callback_data: `/cekin ${workCode.id}`,
                   },
                   {
-                    text: "CekOut " + workCode.nama,
+                    text:
+                      "CekOut " +
+                      nameSimple
+                        .replace("(GLOBAL)", "G")
+                        .replace("HARI", "")
+                        .replace("SEKOLAH", "SKLH"),
                     callback_data: `/cekout ${workCode.id}`,
                   },
                 ]),
