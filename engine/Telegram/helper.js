@@ -1,6 +1,8 @@
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const UserAutoAbsenModel = require("../models/userAutoAbsenModel");
+const midtransClient = require("midtrans-client");
+
 const {
   Login,
   getWorkCode,
@@ -8,6 +10,11 @@ const {
   Presensi,
   formatRupiah,
 } = require("./autoAbsen");
+
+let snap = new midtransClient.Snap({
+  isProduction: false,
+  serverKey: "SB-Mid-server-tmYg6t7fcEzakh36ch91Weqn",
+});
 
 const Switch = async (data, bot) => {
   let {
@@ -61,6 +68,7 @@ const Switch = async (data, bot) => {
           { text: "Get ID", callback_data: "/myid" },
           { text: "Admin", callback_data: "/admin" },
         ],
+        [{ text: "Perpanjang", callback_data: "/perpanjang" }],
       ],
     },
   };
@@ -74,7 +82,7 @@ const Switch = async (data, bot) => {
 
     case "/admin":
       replay =
-        "*Perpanjang Masa Aktif*\nSilahkan silahkan menghubungi admin kami (Biaya per bulan Rp. 50.000,-) \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
+        "*Jika kesusahan melakukan perpanjangan silahkan hubungi admin kami, agar bisa di bantu \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
       break;
 
     case "/format":
@@ -89,6 +97,53 @@ const Switch = async (data, bot) => {
           "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)";
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
+      }
+      break;
+
+    case "/perpanjang":
+      user = await UserModel.findOne({ chatIdTelegram: id });
+      if (user) {
+        replay =
+          "Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n";
+
+        const uniqueCode = generateRandomString(10);
+        let parameter = {
+          transaction_details: {
+            order_id: `order-id-${user.nip}-${uniqueCode}`,
+            gross_amount: 55000,
+          },
+          customer_details: {
+            first_name: user.name,
+            last_name: "",
+            email: "",
+            phone: user.whatsapp,
+          },
+          item_details: [
+            {
+              id: "sub-1",
+              price: 50000,
+              quantity: 1,
+              name: "Subscribe 1",
+            },
+          ],
+          expiry: {
+            start_time: new Date().toISOString(),
+            unit: "hour",
+            duration: 1,
+          },
+        };
+        snap
+          .createTransaction(parameter)
+          .then((transaction) => {
+            let transactionToken = transaction.token;
+            let redirectUrl = transaction.redirect_url;
+            replay += `Berikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
+          })
+          .catch((e) => {
+            replay += `Gagal membuta link pembayaran`;
+          });
+      } else {
+        replay = "Anda belum terdaftar di layanan manapun !!!";
       }
       break;
 
@@ -346,7 +401,7 @@ const Switch = async (data, bot) => {
             user.balance
           )}\n\n`;
         } else {
-          if (id === 1218095835 || id === 6915731358) {
+          if (user.role == "admin") {
             replay = `*Hai ${name}*\nUserName : ${
               user.username
             }\nSaldo : ${formatRupiah(user.balance)}`;
@@ -589,6 +644,17 @@ const Switch = async (data, bot) => {
 
   bot.sendMessage(id, replay, options);
   return;
+};
+
+const generateRandomString = (length) => {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  const charactersLength = characters.length;
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
 };
 
 module.exports = { Switch };
