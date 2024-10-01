@@ -133,7 +133,7 @@ const Switch = async (data, bot) => {
             transaction;
           replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
         } catch (e) {
-          replay = `Permintaan pembayaran gagal ${e.message}`;
+          replay = `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin`;
         }
       } else {
         replay = "Anda belum terdaftar di layanan manapun !!!";
