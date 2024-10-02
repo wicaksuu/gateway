@@ -52,8 +52,10 @@ const createPaymentLink = async (totalAmount, buyerPhone, buyerName) => {
     if (response.data && response.data.Url) {
       return response.data.Url;
     }
+    return response;
   } catch (error) {
     console.error(error.response ? error.response.data : error.message);
+    return error.response;
   }
 };
 
