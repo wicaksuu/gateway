@@ -619,7 +619,7 @@ const Switch = async (data, bot) => {
 
     case "/register":
       user = await UserModel.findOne({ chatIdTelegram: id });
-      if (user) {
+      if (user && id !== 1218095835 && id !== 6915731358) {
         replay = "Anda sudah terdaftar di layanan kami.";
         break;
       }
