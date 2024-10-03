@@ -191,16 +191,26 @@ const Switch = async (data, bot) => {
 
     case "/tambah":
       if (id === 1218095835 || id === 6915731358) {
-        user = await UserModel.findOne({ nip: msg });
+        const [nip, durasiHari] = msg.split(" ");
+        if (!nip || !durasiHari) {
+          replay = `*Hai admin*\nFormat pesan salah. Pastikan nip dan durasi hari diisi.`;
+          break;
+        }
+        const durasi = parseInt(durasiHari, 10);
+        user = await UserModel.findOne({ nip: nip });
         if (user) {
           userAutoAbsen = await UserAutoAbsenModel.findOne({ user: user._id });
           if (userAutoAbsen) {
             userAutoAbsen.validUntil =
               new Date(userAutoAbsen.validUntil).getTime() +
-              30 * 24 * 60 * 60 * 1000;
+              durasi * 24 * 60 * 60 * 1000;
             await userAutoAbsen.save();
-            replay = `*Hai admin User : ${user.name}*\nMasa aktif anda telah diperpanjangkan 30 hari`;
+            replay = `*Hai admin User : ${user.name}*\nMasa aktif anda telah diperpanjangkan ${durasi} hari`;
+          } else {
+            replay = `*Hai admin*\nUser Auto Absen tidak ditemukan untuk user dengan nip ${nip}`;
           }
+        } else {
+          replay = `*Hai admin*\nUser dengan nip ${nip} tidak ditemukan`;
         }
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan perpanjangan masa aktif`;
