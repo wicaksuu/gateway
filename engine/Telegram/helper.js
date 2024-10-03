@@ -1,7 +1,7 @@
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const UserAutoAbsenModel = require("../models/userAutoAbsenModel");
-// const { createPaymentLink } = require("./ipaymu");
+const { createTransaction } = require("./mtrans");
 
 const {
   Login,
@@ -101,23 +101,19 @@ const Switch = async (data, bot) => {
       break;
 
     case "/perpanjang":
-      // user = await UserModel.findOne({ chatIdTelegram: id });
-      // if (user) {
-      //   try {
-      //     const paymentLink = await createPaymentLink(
-      //       55000,
-      //       user.whatsapp,
-      //       user.name
-      //     );
-      //     replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${paymentLink}`;
-      //   } catch (e) {
-      //     const pesanMimin = `*Payment Creating Error*\n\n ${e}\n\nUser : ${user.name}`;
-      //     bot.sendMessage(id, pesanMimin);
-      //     replay = `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin.`;
-      //   }
-      // } else {
-      replay = "Anda belum terdaftar di layanan manapun !!!";
-      // }
+      user = await UserModel.findOne({ chatIdTelegram: id });
+      if (user) {
+        try {
+          const resMitrans = await createTransaction(user);
+          replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${resMitrans.redirectUrl}\n\nId transaksi : ${resMitrans.transactionToken}`;
+        } catch (e) {
+          const pesanMimin = `*Payment Creating Error*\n\n ${e}\n\nUser : ${user.name}`;
+          bot.sendMessage(id, pesanMimin);
+          replay = `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin.`;
+        }
+      } else {
+        replay = "Anda belum terdaftar di layanan manapun !!!";
+      }
       break;
 
     case "/add":
