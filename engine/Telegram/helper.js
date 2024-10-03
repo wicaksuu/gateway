@@ -788,8 +788,11 @@ const Switch = async (data, bot) => {
       break;
 
     default:
-      replay = "*Command tidak tersedia*";
-
+      if (user && user.registrationInProgress) {
+        handleRegistrationMessage(message);
+      } else {
+        replay = "*Command tidak tersedia*";
+      }
       break;
   }
 
