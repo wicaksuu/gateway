@@ -55,52 +55,23 @@ const Switch = async (data, bot) => {
     text,
     callback_data,
   });
-  user = await UserModel.findOne({ chatIdTelegram: id });
-
-  const inlineKeyboard = [
-    [
-      createInlineKeyboardButton("Info", "/info"),
-      createInlineKeyboardButton("Pilih Work Code", "/workcode"),
-    ],
-    [
-      createInlineKeyboardButton("Get ID", "/myid"),
-      createInlineKeyboardButton("Admin", "/admin"),
-    ],
-    [createInlineKeyboardButton("Perpanjang", "/perpanjang")],
-  ];
-
-  if (!user) {
-    inlineKeyboard[2].push(createInlineKeyboardButton("daftar", "/register"));
-  }
-
-  if (id === 1218095835 || id === 6915731358) {
-    inlineKeyboard.push([createInlineKeyboardButton("daftar", "/register")]);
-  }
 
   options = {
     parse_mode: "Markdown",
     reply_markup: {
-      inline_keyboard: inlineKeyboard,
+      inline_keyboard: [
+        [
+          createInlineKeyboardButton("Info", "/info"),
+          createInlineKeyboardButton("Pilih Work Code", "/workcode"),
+        ],
+        [
+          createInlineKeyboardButton("Get ID", "/myid"),
+          createInlineKeyboardButton("Admin", "/admin"),
+        ],
+        [createInlineKeyboardButton("Perpanjang", "/perpanjang")],
+      ],
     },
   };
-
-  const registrationSteps = [
-    "Silahkan masukkan NIP anda:",
-    "Silahkan masukkan Password anda:",
-    "Silahkan masukkan URL:",
-    "Silahkan masukkan Latitude:",
-    "Silahkan masukkan Longitude:",
-    "Silahkan masukkan Chat ID Telegram:",
-    "Silahkan masukkan Nama anda:",
-    "Silahkan masukkan IMEI:",
-    "Silahkan masukkan User Agent:",
-    "Silahkan masukkan WHATSAPP:",
-    "Silahkan masukkan EMAIL:",
-    "Silahkan masukkan REF:",
-  ];
-
-  let step = 0;
-  let registrationData = {};
 
   switch (key) {
     case "/start":
@@ -634,166 +605,9 @@ const Switch = async (data, bot) => {
       }
 
       break;
-
-    case "/register":
-      user = await UserModel.findOne({ chatIdTelegram: id });
-      if (user && id !== 1218095835 && id !== 6915731358) {
-        replay = "Anda sudah terdaftar di layanan kami.";
-        break;
-      }
-
-      const askNextStep = () => {
-        if (step < registrationSteps.length) {
-          bot.sendMessage(id, registrationSteps[step], {
-            reply_markup: {
-              inline_keyboard: [
-                [{ text: "Batal", callback_data: "cancel_registration" }],
-              ],
-            },
-          });
-        } else {
-          // Save user data
-          const {
-            nip,
-            password,
-            url,
-            latitude,
-            longitude,
-            chatIdTelegram,
-            name,
-            imei,
-            userAgent,
-            whatsapp,
-            email,
-            ref,
-          } = registrationData;
-
-          UserModel.findOne({ nip })
-            .then(async (user) => {
-              if (!user) {
-                user = new UserModel({
-                  name: name,
-                  username: nip,
-                  whatsapp: whatsapp,
-                  email: email,
-                  password: await bcrypt.hash(password, 10),
-                  role: "user",
-                  permission: { read: true, write: false },
-                  nip: nip,
-                  ref: ref,
-                  chatIdTelegram,
-                });
-                await user.save();
-              } else {
-                user.name = name;
-                user.username = nip;
-                user.password = await bcrypt.hash(password, 10);
-                user.chatIdTelegram = chatIdTelegram;
-                await user.save();
-              }
-
-              let userAutoAbsen = await UserAutoAbsenModel.findOne({
-                user: user._id,
-              });
-              if (!userAutoAbsen) {
-                userAutoAbsen = new UserAutoAbsenModel({
-                  user: user._id,
-                  password: password,
-                  imei: imei,
-                  userAgent: userAgent,
-                  latitude: latitude,
-                  longitude: longitude,
-                  url: url,
-                  validUntil: new Date(),
-                });
-              } else {
-                userAutoAbsen.password = password;
-                userAutoAbsen.imei = imei;
-                userAutoAbsen.userAgent = userAgent;
-                userAutoAbsen.latitude = latitude;
-                userAutoAbsen.longitude = longitude;
-                userAutoAbsen.url = url;
-              }
-
-              await userAutoAbsen.save();
-              bot.sendMessage(id, "User berhasil di buat atau diperbarui");
-            })
-            .catch((error) => {
-              bot.sendMessage(
-                id,
-                `Gagal membuat atau memperbarui user ada sesuatu yang salah`
-              );
-            });
-        }
-      };
-
-      const handleRegistrationMessage = (msg) => {
-        if (step < registrationSteps.length) {
-          const response = msg.text.trim();
-          switch (step) {
-            case 0:
-              registrationData.nip = response;
-              break;
-            case 1:
-              registrationData.password = response;
-              break;
-            case 2:
-              registrationData.url = response;
-              break;
-            case 3:
-              registrationData.latitude = response;
-              break;
-            case 4:
-              registrationData.longitude = response;
-              break;
-            case 5:
-              registrationData.chatIdTelegram = response;
-              break;
-            case 6:
-              registrationData.name = response;
-              break;
-            case 7:
-              registrationData.imei = response;
-              break;
-            case 8:
-              registrationData.userAgent = response;
-              break;
-            case 9:
-              registrationData.whatsapp = response;
-              break;
-            case 10:
-              registrationData.email = response;
-              break;
-            case 11:
-              registrationData.ref = response;
-              break;
-          }
-          step++;
-          askNextStep();
-        }
-      };
-
-      const handleCallbackQuery = (callbackQuery) => {
-        if (callbackQuery.data === "cancel_registration") {
-          bot.sendMessage(id, "Pendaftaran dibatalkan.");
-          bot.removeListener("message", handleRegistrationMessage);
-          bot.removeListener("callback_query", handleCallbackQuery);
-        }
-      };
-
-      bot.on("message", handleRegistrationMessage);
-      bot.on("callback_query", handleCallbackQuery);
-
-      askNextStep();
-      break;
-
     default:
-      if (step < registrationSteps.length) {
-        // jika masih dalam percakapan dan belum di batalkan maka akan mengeksekusi percakapan registrasi
-        handleRegistrationMessage(message);
-      } else {
-        replay = "*Command tidak tersedia*";
-      }
+      replay = "*Command tidak tersedia*";
+
       break;
   }
 
