@@ -17,7 +17,7 @@ const createTransaction = async (user) => {
     customer_details: {
       first_name: user.name,
       last_name: "",
-      email: "",
+      email: user.email,
       phone: user.whatsapp,
     },
     item_details: [
