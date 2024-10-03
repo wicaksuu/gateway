@@ -84,6 +84,24 @@ const Switch = async (data, bot) => {
     },
   };
 
+  const registrationSteps = [
+    "Silahkan masukkan NIP anda:",
+    "Silahkan masukkan Password anda:",
+    "Silahkan masukkan URL:",
+    "Silahkan masukkan Latitude:",
+    "Silahkan masukkan Longitude:",
+    "Silahkan masukkan Chat ID Telegram:",
+    "Silahkan masukkan Nama anda:",
+    "Silahkan masukkan IMEI:",
+    "Silahkan masukkan User Agent:",
+    "Silahkan masukkan WHATSAPP:",
+    "Silahkan masukkan EMAIL:",
+    "Silahkan masukkan REF:",
+  ];
+
+  let step = 0;
+  let registrationData = {};
+
   switch (key) {
     case "/start":
       replay =
@@ -624,24 +642,6 @@ const Switch = async (data, bot) => {
         break;
       }
 
-      const registrationSteps = [
-        "Silahkan masukkan NIP anda:",
-        "Silahkan masukkan Password anda:",
-        "Silahkan masukkan URL:",
-        "Silahkan masukkan Latitude:",
-        "Silahkan masukkan Longitude:",
-        "Silahkan masukkan Chat ID Telegram:",
-        "Silahkan masukkan Nama anda:",
-        "Silahkan masukkan IMEI:",
-        "Silahkan masukkan User Agent:",
-        "Silahkan masukkan WHATSAPP:",
-        "Silahkan masukkan EMAIL:",
-        "Silahkan masukkan REF:",
-      ];
-
-      let step = 0;
-      let registrationData = {};
-
       const askNextStep = () => {
         if (step < registrationSteps.length) {
           bot.sendMessage(id, registrationSteps[step], {
@@ -788,7 +788,8 @@ const Switch = async (data, bot) => {
       break;
 
     default:
-      if (user && user.registrationInProgress) {
+      if (step < registrationSteps.length) {
+        // jika masih dalam percakapan dan belum di batalkan maka akan mengeksekusi percakapan registrasi
         handleRegistrationMessage(message);
       } else {
         replay = "*Command tidak tersedia*";
