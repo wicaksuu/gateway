@@ -193,7 +193,7 @@ const Switch = async (data, bot) => {
       if (id === 1218095835 || id === 6915731358) {
         const [nip, durasiHari] = msg.split(" ");
         if (!nip || !durasiHari) {
-          replay = `*Hai admin*\nFormat pesan salah. Pastikan nip dan durasi hari diisi.`;
+          replay = `*Hai admin*\nFormat pesan salah. Pastikan nip dan durasi hari diisi.\nFormat: /tambah nip hari\nContoh: /tambah 123 20`;
           break;
         }
         const durasi = parseInt(durasiHari, 10);
