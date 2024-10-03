@@ -506,17 +506,21 @@ const Switch = async (data, bot) => {
                   url
                 );
                 if (respPresensi.result) {
-                  validUntilDate = new Date(
-                    userAutoAbsen.validUntil
-                  ).toLocaleString("id-ID", {
-                    timeZone: "Asia/Jakarta",
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  });
+                  validUntilDate =
+                    user.role === "admin"
+                      ? "Unlimited"
+                      : new Date(userAutoAbsen.validUntil).toLocaleString(
+                          "id-ID",
+                          {
+                            timeZone: "Asia/Jakarta",
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          }
+                        );
 
                   replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${validUntilDate}`;
                 } else {
@@ -582,17 +586,21 @@ const Switch = async (data, bot) => {
                   url
                 );
                 if (respPresensi.result) {
-                  validUntilDate = new Date(
-                    userAutoAbsen.validUntil
-                  ).toLocaleString("id-ID", {
-                    timeZone: "Asia/Jakarta",
-                    day: "2-digit",
-                    month: "2-digit",
-                    year: "numeric",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                  });
+                  validUntilDate =
+                    user.role === "admin"
+                      ? "Unlimited"
+                      : new Date(userAutoAbsen.validUntil).toLocaleString(
+                          "id-ID",
+                          {
+                            timeZone: "Asia/Jakarta",
+                            day: "2-digit",
+                            month: "2-digit",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            second: "2-digit",
+                          }
+                        );
 
                   replay = `*Hai ${name}*\n\nHasil Presensi :\nPesan : ${respPresensi.result.message}\nNama : ${respPresensi.result.nama}\nDinas : ${respPresensi.result.departemen}\nJarak : ${respPresensi.result.jarak}\nType : ${respPresensi.result.checktype}\nWaktu : ${respPresensi.result.waktu}\n\nTerimakasih telah menggunakan jasa kami, masa aktif anda sampai ${validUntilDate}`;
                 } else {

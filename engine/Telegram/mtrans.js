@@ -48,7 +48,7 @@ const withdrawUser = async (user, amount) => {
   // Implementasi logika penarikan dana untuk user
 };
 
-const handlePaymentCallback = (callbackData, user) => {
+const handlePaymentCallback = async (callbackData, user) => {
   const bot = new TelegramBot(
     "6723275259:AAEuLPp-CvYQSioGZjvpqJ4rLyAP6b8vT80",
     { polling: false }
@@ -88,6 +88,18 @@ const handlePaymentCallback = (callbackData, user) => {
   }\n`;
 
   bot.sendMessage(user.chatIdTelegram, message, options);
+
+  if (
+    (callbackData.transaction_status === "capture" &&
+      callbackData.fraud_status === "accept") ||
+    callbackData.transaction_status === "settlement"
+  ) {
+    // disini saya ingin mendapatkan total uang masuk yang sudah terpotong oleh biaya layanan
+    if (user.ref == null) {
+    } else {
+    }
+  }
+
   return message;
 };
 
