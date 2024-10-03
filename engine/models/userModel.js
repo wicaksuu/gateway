@@ -17,6 +17,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     whatsapp: {
       type: String,
       required: false,
@@ -60,7 +65,7 @@ const userSchema = new mongoose.Schema(
       required: false,
     },
     ref: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "User",
       required: false,
     },

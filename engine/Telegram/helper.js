@@ -94,7 +94,7 @@ const Switch = async (data, bot) => {
           parse_mode: "Markdown",
         });
         replay =
-          "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)";
+          "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)\nWHATSAPP : 08123456789\nEMAIL : tes@test.com";
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
       }
@@ -128,6 +128,8 @@ const Switch = async (data, bot) => {
         const name = msgArray[6].split(" : ")[1];
         const imei = msgArray[7].split(" : ")[1];
         const userAgent = msgArray[8].split(" : ")[1];
+        const whatsapp = msgArray[9].split(" : ")[1];
+        const email = msgArray[10].split(" : ")[1];
 
         try {
           let user = await UserModel.findOne({ nip });
@@ -135,6 +137,8 @@ const Switch = async (data, bot) => {
             user = new UserModel({
               name: name,
               username: nip,
+              whatsapp: whatsapp,
+              email: email,
               password: await bcrypt.hash(password, 10),
               role: "user",
               permission: { read: true, write: false },
