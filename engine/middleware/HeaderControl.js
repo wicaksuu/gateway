@@ -8,10 +8,14 @@ const headerControl = async (req, res, next) => {
     });
   }
 
-  const botId = req.query.bot;
-  if (botId && req.method === "POST") {
-    const originalBody = { ...req.body };
-    req.body = { query: "Bot", params: { data: originalBody, botId: botId } };
+  const { bot: botId, hook } = req.query;
+
+  if (req.method === "POST") {
+    if (botId) {
+      req.body = { query: "Bot", params: { data: { ...req.body }, botId } };
+    } else if (hook) {
+      req.body = { query: "Webhook", params: { data: { ...req.body }, hook } };
+    }
   }
 
   next();

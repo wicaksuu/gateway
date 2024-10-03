@@ -8,7 +8,6 @@ const connectDB = require("./engine/config/databaseConfig");
 const responseApiFormat = require("./engine/middleware/responseApiFormat");
 const headerControl = require("./engine/middleware/HeaderControl");
 const apiRoutes = require("./engine/routers/router");
-// const webHook = require("./engine/routers/webHook");
 
 connectDB();
 
@@ -34,7 +33,6 @@ app.use(responseApiFormat);
 app.use(headerControl);
 
 app.use("/", apiRoutes);
-// app.use("/webhook", webHook);
 app.listen(PORT, () => {
   console.log(`http://127.0.0.1:${PORT}`);
 });

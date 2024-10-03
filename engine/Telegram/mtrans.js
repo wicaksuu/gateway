@@ -1,9 +1,14 @@
 const midtransClient = require("midtrans-client");
+const TelegramBot = require("node-telegram-bot-api");
 
-let snap = new midtransClient.Snap({
+const decodeBase64 = (encodedString) => {
+  return Buffer.from(encodedString, "base64").toString("utf-8");
+};
+
+const snap = new midtransClient.Snap({
   isProduction: process.env.MIDTRANS_IS_PRODUCTION === "true",
-  serverKey: process.env.MIDTRANS_SERVER_KEY,
-  clientKey: process.env.MIDTRANS_CLIENT_KEY,
+  serverKey: decodeBase64(process.env.MIDTRANS_SERVER_KEY),
+  clientKey: decodeBase64(process.env.MIDTRANS_CLIENT_KEY),
 });
 
 const createTransaction = async (user) => {
@@ -43,30 +48,47 @@ const withdrawUser = async (user, amount) => {
   // Implementasi logika penarikan dana untuk user
 };
 
-const handlePaymentCallback = (callbackData) => {
-  switch (callbackData.transaction_status) {
-    case "capture":
-      if (callbackData.fraud_status === "accept") {
-        // Pembayaran sukses
-      } else if (callbackData.fraud_status === "deny") {
-        // Pembayaran ditolak
-      }
-      break;
-    case "settlement":
-      // Pembayaran sukses
-      break;
-    case "cancel":
-    case "deny":
-    case "expire":
-      // Pembayaran gagal
-      break;
-    case "pending":
-      // Pembayaran tertunda
-      break;
-    default:
-      // Notifikasi lain
-      break;
-  }
+const handlePaymentCallback = (callbackData, user) => {
+  const bot = new TelegramBot(
+    "6723275259:AAEuLPp-CvYQSioGZjvpqJ4rLyAP6b8vT80",
+    { polling: false }
+  );
+
+  const options = {
+    parse_mode: "Markdown",
+  };
+
+  let message = `*Notifikasi Pembayaran*\n\n`;
+  message += `*Nama:* ${user.name}\n`;
+  message += `*WhatsApp:* ${user.whatsapp}\n\n`;
+  message += `*Status Transaksi:* ${callbackData.transaction_status}\n`;
+  message += `*Tipe Pembayaran:* ${callbackData.payment_type}\n`;
+  message += `*ID Pesanan:* ${callbackData.order_id}\n`;
+  message += `*Jumlah Pembayaran:* Rp ${callbackData.gross_amount}\n`;
+  message += `*Waktu Kadaluarsa:* ${callbackData.expiry_time}\n\n`;
+
+  const statusMessages = {
+    capture:
+      callbackData.fraud_status === "accept"
+        ? "Pembayaran sukses"
+        : "Pembayaran ditolak",
+    settlement: "Pembayaran sukses",
+    cancel: "Pembayaran dibatalkan",
+    deny: "Pembayaran ditolak",
+    expire: "Pembayaran kadaluarsa",
+    pending: "Pembayaran tertunda",
+    refund: "Pembayaran dikembalikan",
+    partial_refund: "Pembayaran sebagian dikembalikan",
+    authorize: "Pembayaran terotorisasi",
+    void: "Pembayaran dibatalkan",
+  };
+
+  message += `*Status:* ${
+    statusMessages[callbackData.transaction_status] || "Notifikasi lain"
+  }\n`;
+
+  bot.sendMessage(user.chatIdTelegram, message, options);
+  return message;
 };
 
 module.exports = {

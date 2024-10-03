@@ -88,13 +88,13 @@ const Switch = async (data, bot) => {
     case "/format":
       if (id === 1218095835 || id === 6915731358) {
         replay =
-          "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : ";
+          "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : \nWHATSAPP : \nEMAIL : \nREF : \n";
 
         bot.sendMessage(id, replay, {
           parse_mode: "Markdown",
         });
         replay =
-          "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)\nWHATSAPP : 08123456789\nEMAIL : tes@test.com";
+          "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)\nWHATSAPP : 08123456789\nEMAIL : tes@test.com\nREF : <username afiliasi>";
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
       }
@@ -130,6 +130,7 @@ const Switch = async (data, bot) => {
         const userAgent = msgArray[8].split(" : ")[1];
         const whatsapp = msgArray[9].split(" : ")[1];
         const email = msgArray[10].split(" : ")[1];
+        const ref = msgArray[11].split(" : ")[1];
 
         try {
           let user = await UserModel.findOne({ nip });
@@ -143,6 +144,7 @@ const Switch = async (data, bot) => {
               role: "user",
               permission: { read: true, write: false },
               nip: nip,
+              ref: ref,
               chatIdTelegram,
             });
             await user.save();
@@ -180,7 +182,7 @@ const Switch = async (data, bot) => {
           await userAutoAbsen.save();
           replay = "User berhasil di buat atau diperbarui";
         } catch (error) {
-          replay = `Gagal membuat atau memperbarui user: ${error.message}`;
+          replay = `Gagal membuat atau memperbarui user ada sesuatu yang salah`;
         }
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;

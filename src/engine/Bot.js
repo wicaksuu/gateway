@@ -4,7 +4,7 @@ const TelegramBot = require("node-telegram-bot-api");
 
 module.exports = {
   name: "Bot",
-  description: "Menerima status dari server",
+  description: "Mendapat notifikasi dari bot telegram",
   params: ["data", "botId"],
   paramTypes: {
     data: "json",
