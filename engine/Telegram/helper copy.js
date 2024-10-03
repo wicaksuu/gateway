@@ -1,7 +1,7 @@
 const UserModel = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const UserAutoAbsenModel = require("../models/userAutoAbsenModel");
-const midtransClient = require("midtrans-client");
+const { createTransaction } = require("./mtrans");
 
 const {
   Login,
@@ -9,13 +9,7 @@ const {
   CekPresensi,
   Presensi,
   formatRupiah,
-  generateRandomString,
 } = require("./autoAbsen");
-
-let snap = new midtransClient.Snap({
-  isProduction: false,
-  serverKey: "SB-Mid-server-tmYg6t7fcEzakh36ch91Weqn",
-});
 
 const Switch = async (data, bot) => {
   let {
@@ -37,7 +31,7 @@ const Switch = async (data, bot) => {
     nip,
     respCekPresensi,
     respPresensi,
-  } = "";
+  } = {};
   const { message, callback_query } = data;
   const botData = message || callback_query.message;
   const { first_name, last_name, username, id, type } = botData.chat;
@@ -88,19 +82,19 @@ const Switch = async (data, bot) => {
 
     case "/admin":
       replay =
-        "*Jika kesusahan melakukan perpanjangan silahkan hubungi admin kami, agar bisa di bantu \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
+        "*Informasi*\nJika kesusahan melakukan perpanjangan silahkan hubungi admin kami, agar bisa di bantu \n\n@miminabsen \n\natau \n\nhttps://t.me/miminabsen\n\nterimakasih";
       break;
 
     case "/format":
       if (id === 1218095835 || id === 6915731358) {
         replay =
-          "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : ";
+          "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : \nWHATSAPP : \nEMAIL : \nREF : \n";
 
         bot.sendMessage(id, replay, {
           parse_mode: "Markdown",
         });
         replay =
-          "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)";
+          "*Format Pengisian*\nNIP : 198201142014021002\nPassword : 198201142014021002\nURL : https://absen.madiunkab.go.id\nLatitude : -7.54350646208995\nLongitude : 111.65470339160038\nChat ID Telegram : 6939373220\nNama : NUR EKOWAHYUDI, S.E.\nIMEI : 8c7c8e731c868e84\nUser Agent : Dalvik/2.1.0 (Linux; U; Android 13; 22041219G Build/TP1A.220624.014)\nWHATSAPP : 08123456789\nEMAIL : tes@test.com\nREF : <username afiliasi>";
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
       }
@@ -109,37 +103,13 @@ const Switch = async (data, bot) => {
     case "/perpanjang":
       user = await UserModel.findOne({ chatIdTelegram: id });
       if (user) {
-        const uniqueCode = generateRandomString(10);
-        const parameter = {
-          transaction_details: {
-            order_id: `order-id-${user.nip}-${uniqueCode}`,
-            gross_amount: 55000,
-          },
-          customer_details: {
-            first_name: user.name,
-            phone: user.whatsapp,
-          },
-          item_details: [
-            {
-              id: "sub-1",
-              price: 50000,
-              quantity: 1,
-              name: "Subscribe 1",
-            },
-          ],
-          expiry: {
-            start_time: new Date().toISOString(),
-            unit: "hour",
-            duration: 1,
-          },
-        };
         try {
-          const transaction = await snap.createTransaction(parameter);
-          const { token: transactionToken, redirect_url: redirectUrl } =
-            transaction;
-          replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${redirectUrl}\n\nId transaksi : ${transactionToken}`;
+          const resMitrans = await createTransaction(user);
+          replay = `Biaya yang di bayar adalah (Rp. 55.000,-) sudah termasuk biaya layanan bank, pastikan melakukan transfer dengan nominal yang sesuai !!!.\n\nBerikut link pembayaran nya :\n\n${resMitrans.redirectUrl}\n\nId transaksi : ${resMitrans.transactionToken}`;
         } catch (e) {
-          replay = `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin`;
+          const pesanMimin = `*Payment Creating Error*\n\n ${e}\n\nUser : ${user.name}`;
+          bot.sendMessage(id, pesanMimin);
+          replay = `Permintaan pembayaran gagal. Tolong ulangi atau kontak admin.`;
         }
       } else {
         replay = "Anda belum terdaftar di layanan manapun !!!";
@@ -158,6 +128,9 @@ const Switch = async (data, bot) => {
         const name = msgArray[6].split(" : ")[1];
         const imei = msgArray[7].split(" : ")[1];
         const userAgent = msgArray[8].split(" : ")[1];
+        const whatsapp = msgArray[9].split(" : ")[1];
+        const email = msgArray[10].split(" : ")[1];
+        const ref = msgArray[11].split(" : ")[1];
 
         try {
           let user = await UserModel.findOne({ nip });
@@ -165,10 +138,13 @@ const Switch = async (data, bot) => {
             user = new UserModel({
               name: name,
               username: nip,
+              whatsapp: whatsapp,
+              email: email,
               password: await bcrypt.hash(password, 10),
               role: "user",
               permission: { read: true, write: false },
               nip: nip,
+              ref: ref,
               chatIdTelegram,
             });
             await user.save();
@@ -206,7 +182,7 @@ const Switch = async (data, bot) => {
           await userAutoAbsen.save();
           replay = "User berhasil di buat atau diperbarui";
         } catch (error) {
-          replay = `Gagal membuat atau memperbarui user: ${error.message}`;
+          replay = `Gagal membuat atau memperbarui user ada sesuatu yang salah`;
         }
       } else {
         replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan pembuatan akun`;
@@ -307,7 +283,6 @@ const Switch = async (data, bot) => {
         if (userAutoAbsen) {
           apiKey = userAutoAbsen.apiKey;
           userAgent = userAutoAbsen.userAgent;
-          apiKey = userAutoAbsen.apiKey;
           imei = userAutoAbsen.imei;
           url = userAutoAbsen.url;
           latitude = userAutoAbsen.latitude;
@@ -424,7 +399,6 @@ const Switch = async (data, bot) => {
         if (userAutoAbsen) {
           apiKey = userAutoAbsen.apiKey;
           userAgent = userAutoAbsen.userAgent;
-          apiKey = userAutoAbsen.apiKey;
           imei = userAutoAbsen.imei;
           url = userAutoAbsen.url;
           latitude = userAutoAbsen.latitude;
@@ -492,7 +466,6 @@ const Switch = async (data, bot) => {
           if (user.role === "admin" || userAutoAbsen.validUntil > new Date()) {
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
-            apiKey = userAutoAbsen.apiKey;
             imei = userAutoAbsen.imei;
             url = userAutoAbsen.url;
             latitude = userAutoAbsen.latitude;
@@ -569,7 +542,6 @@ const Switch = async (data, bot) => {
           if (user.role === "admin" || userAutoAbsen.validUntil > new Date()) {
             apiKey = userAutoAbsen.apiKey;
             userAgent = userAutoAbsen.userAgent;
-            apiKey = userAutoAbsen.apiKey;
             imei = userAutoAbsen.imei;
             url = userAutoAbsen.url;
             latitude = userAutoAbsen.latitude;
