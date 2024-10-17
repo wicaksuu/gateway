@@ -3,7 +3,7 @@ const authMiddleware = require("../../engine/middleware/authMiddleware");
 
 module.exports = {
   name: "status",
-  description: "Receive status of server",
+  description: "Receive status of servers",
   params: [],
   paramTypes: {},
   sampleRequest: {
