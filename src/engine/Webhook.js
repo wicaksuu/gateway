@@ -3,7 +3,7 @@ const UserModel = require("../../engine/models/userModel");
 
 module.exports = {
   name: "Webhook",
-  description: "Menerima notifikasi dari payment gateway",
+  description: "Menerima notifikasi dari payment gateway wicaksu",
   params: ["data", "hook"],
   paramTypes: {
     data: "json",
