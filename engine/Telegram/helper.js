@@ -222,7 +222,7 @@ const Switch = async (data, bot) => {
       if (id === 1218095835 || id === 6915731358) {
         const [pesanPengumuman] = msg.split("-");
         if (!pesanPengumuman) {
-          replay = `*Hai admin*\nFormat pesan salah. Pastikan pesan diisi.\nFormat: /pengumuman isi_pesan\nContoh: /pengumuman Pengumuman penting untuk semua user.`;
+          replay = `*Hai admin*\nFormat pesan salah. Pastikan pesan diisi.\nFormat: /pengumuman-isi_pesan\nContoh: /pengumuman-Pengumuman penting untuk semua user.`;
           break;
         }
 
