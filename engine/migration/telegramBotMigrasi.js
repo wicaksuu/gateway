@@ -49,7 +49,7 @@ async function migrateTelegramBots() {
         const allBots = await TelegramBotModel.find();
         for (const bot of allBots) {
           const response = await axios.get(
-            `https://api.telegram.org/bot${bot.token}/setWebhook?url=https://gql.madiunkab.go.id?bot=${bot._id}`
+            `https://api.telegram.org/bot${bot.token}/setWebhook?url=https://gql.wicak.id?bot=${bot._id}`
           );
           console.log(`Webhook untuk ${bot.name} berhasil diatur`);
         }
