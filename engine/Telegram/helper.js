@@ -231,7 +231,7 @@ const Switch = async (data, bot) => {
         if (users.length > 0) {
           // Kirim pesan ke setiap user
           for (const user of users) {
-            bot.sendMessage(user.id, pesanPengumuman, options);
+            bot.sendMessage(user.chatIdTelegram, pesanPengumuman, options);
           }
           replay = `*Hai admin*\n\n${pesanPengumuman}\n\nPengumuman berhasil dikirim ke semua user.`;
         } else {
