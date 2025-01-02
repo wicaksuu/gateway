@@ -220,7 +220,7 @@ const Switch = async (data, bot) => {
     // Pengumuman
     case "/pengumuman":
       if (id === 1218095835 || id === 6915731358) {
-        const [pesanPengumuman] = msg.split(" ");
+        const [pesanPengumuman] = msg.split("-");
         if (!pesanPengumuman) {
           replay = `*Hai admin*\nFormat pesan salah. Pastikan pesan diisi.\nFormat: /pengumuman isi_pesan\nContoh: /pengumuman Pengumuman penting untuk semua user.`;
           break;
@@ -233,12 +233,12 @@ const Switch = async (data, bot) => {
           for (const user of users) {
             bot.sendMessage(user.id, pesanPengumuman, options);
           }
-          replay = `*Hai admin*\nPengumuman berhasil dikirim ke semua user.`;
+          replay = `*Hai admin*\n\n${pesanPengumuman}\n\nPengumuman berhasil dikirim ke semua user.`;
         } else {
           replay = `*Hai admin*\nUser tidak ditemukan.`;
         }
       } else {
-        replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk melakukan perpanjangan masa aktif.`;
+        replay = `*Hai ${name}*\nAnda tidak memiliki akses untuk mengirim pengumuman.`;
       }
       break;
 
