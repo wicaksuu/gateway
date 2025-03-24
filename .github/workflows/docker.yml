@@ -39,7 +39,8 @@ jobs:
       - name: SSH to Server
         uses: appleboy/ssh-action@v0.1.2
         with:
-          host: 103.132.230.120
+          host: 103.132.230.30
+          port: 33233
           username: wicaksu
           password: Jack03061997
           script: |
