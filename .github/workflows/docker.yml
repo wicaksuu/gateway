@@ -30,7 +30,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: wicaksu/gateway:latest
+          tags: wicaksu/gateway:wicak1
 
   deploy:
     runs-on: ubuntu-latest
@@ -43,7 +43,7 @@ jobs:
           username: wicaksu
           password: Jack03061997
           script: |
-            docker pull wicaksu/gateway:latest
+            docker pull wicaksu/gateway:wicak1
             docker stop gateway || true
             docker rm gateway || true
-            docker run -d --name gateway -p 3000:3000 --restart unless-stopped wicaksu/gateway:latest
+            docker run -d --name gateway -p 3000:3000 --restart unless-stopped wicaksu/gateway:wicak1
