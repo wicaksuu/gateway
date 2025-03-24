@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   app:
     build: .
@@ -14,15 +12,3 @@ services:
       - MICRO_SERVICE_HEADER=${MICRO_SERVICE_HEADER}
     depends_on:
       - mongodb
-
-  mongodb:
-    image: mongo:latest
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: wicaksu
-      MONGO_INITDB_ROOT_PASSWORD: Jack03061997
-    volumes:
-      - mongo_data:/data/db
-
-volumes:
-  mongo_data:

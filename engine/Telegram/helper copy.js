@@ -86,7 +86,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/format":
-      if (id === 1218095835 || id === 6915731358) {
+      if (id === 1218095835) {
         replay =
           "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : \nWHATSAPP : \nEMAIL : \nREF : \n";
 
@@ -117,7 +117,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/add":
-      if (id === 1218095835 || id === 6915731358) {
+      if (id === 1218095835) {
         const msgArray = msg.split("\n");
         const nip = msgArray[0].split(" : ")[1].replace(/\s+/g, "");
         const password = msgArray[1].split(" : ")[1];
@@ -190,7 +190,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/tambah":
-      if (id === 1218095835 || id === 6915731358) {
+      if (id === 1218095835) {
         user = await UserModel.findOne({ nip: msg });
         if (user) {
           userAutoAbsen = await UserAutoAbsenModel.findOne({ user: user._id });
@@ -215,7 +215,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/user":
-      if (id === 1218095835 || id === 6915731358) {
+      if (id === 1218095835) {
         user = await UserModel.find({
           $or: [
             { username: msg },

@@ -86,7 +86,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/format":
-      if (id === 1218095835 || id === 6915731358) {
+      if (id === 1218095835) {
         replay =
           "/add NIP : \nPassword : \nURL : https://absen.madiunkab.go.id\nLatitude : \nLongitude : \nChat ID Telegram : \nNama : \nIMEI : \nUser Agent : \nWHATSAPP : \nEMAIL : \nREF : \n";
 
@@ -117,7 +117,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/add":
-      if (id === 1218095835 || id === 6915731358) {
+      if (id === 1218095835) {
         const msgArray = msg.split("\n");
         const nip = msgArray[0].split(" : ")[1].replace(/\s+/g, "");
         const password = msgArray[1].split(" : ")[1];
@@ -190,7 +190,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/tambah":
-      if (id === 1218095835 || id === 6915731358) {
+      if (id === 1218095835) {
         const [nip, durasiHari] = msg.split(" ");
         if (!nip || !durasiHari) {
           replay = `*Hai admin*\nFormat pesan salah. Pastikan nip dan durasi hari diisi.\nFormat: /tambah nip hari\nContoh: /tambah 123 20`;
@@ -219,7 +219,7 @@ const Switch = async (data, bot) => {
 
     // Pengumuman
     case "/pengumuman":
-      if (id === 1218095835 || id === 6915731358) {
+      if (id === 1218095835) {
         const [pesanPengumuman] = msg.split("-");
         if (!pesanPengumuman) {
           replay = `*Hai admin*\nFormat pesan salah. Pastikan pesan diisi.\nFormat: /pengumuman-isi_pesan\nContoh: /pengumuman-Pengumuman penting untuk semua user.`;
@@ -250,7 +250,7 @@ const Switch = async (data, bot) => {
       break;
 
     case "/user":
-      if (id === 1218095835 || id === 6915731358) {
+      if (id === 1218095835) {
         user = await UserModel.find({
           $or: [
             { username: msg },
