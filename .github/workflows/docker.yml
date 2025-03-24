@@ -47,4 +47,4 @@ jobs:
             docker pull wicaksu/gateway:wicak1
             docker stop gateway || true
             docker rm gateway || true
-            docker run -d --name gateway -p 3000:3000 --restart unless-stopped wicaksu/gateway:wicak1
+            docker run -d --name gateway -p 3001:3000 --restart unless-stopped wicaksu/gateway:wicak1
